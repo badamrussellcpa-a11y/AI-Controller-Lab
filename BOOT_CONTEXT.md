@@ -1,121 +1,96 @@
 
-# AI Controller Lab — Boot Context
+# BOOT_CONTEXT.md
 
-Purpose: Reload the project before building.
+## AI Controller Lab — Boot Context
 
-This file is the AI boot sequence. It is operational documentation, not a study guide.
+**Current Release:** Job Scout v1.0 (In Progress)
 
----
+**Last Git Commit:** `7d6325d`
 
-## Operating Mode
-
-- Default mode: Build Mode
-- Deliver complete working files (Safe Copy)
-- Include a File Manifest before coding
-- Keep explanations short during builds
-- Save deeper explanations for the Workpaper
-- End every session with Daily Close
-
----
-
-## Current Project State
-
-Release: Pre-v1.0
-
-Latest Git Commit: 33fb28b
-
-Repository Status:
-- GitHub synced
-- Working tree clean
+**Repository:** AI-Controller-Lab
 
 ---
 
 ## Current Mission
 
-Complete Job Scout v1.0.
-
-Definition of Done:
-
-`python job_scout.py`
-
-returns real Controller and Senior Accountant job listings from a stable career source.
+Build **Job Scout v1.0** — the first working AI agent that returns real Controller and Senior Accountant jobs from stable career-page sources.
 
 ---
 
-## Active Architecture
+## Current Architecture
 
-Repository:
+### Root
 
-AI-Controller-Lab/
-
-Key project files:
-
+- BOOT_CONTEXT.md
+- OPERATING_SYSTEM.md
 - PROJECT_CHARTER.md
 - ROADMAP.md
-- OPERATING_SYSTEM.md *(to be created)*
-- BOOT_CONTEXT.md
+- .gitignore
 - workpapers/
-- job-agent/browser.py
-- job-agent/scraper.py
-- job-agent/job_scout.py
-- job-agent/job_tracker.csv
 
-Current known status:
+### Job Agent
 
-- Git workflow works.
-- Python 3.14.7 installed.
+- browser.py
+- browser_test.py
+- scraper.py
+- job_scout.py
+- job_tracker.csv
+- master_prompt.md
+- search_rules.md
+
+---
+
+## Current Status
+
+### Completed
+
+- Git + GitHub workflow established.
+- Python environment configured.
 - Playwright installed.
-- Chromium installed.
-- Browser automation works.
-- Indeed selectors proved unreliable.
-- Architecture is separated into browser, scraper, and orchestrator.
+- Browser automation verified.
+- Repository cleaned and organized.
+- Workpaper system established.
+
+### In Progress
+
+- Replace fragile Indeed-only extraction.
+- Connect Job Scout to stable career-page sources.
+- Return real accounting jobs with automatic match scoring.
 
 ---
 
-## Project Principles
+## Next Mission
 
-- Build first.
-- Learn second.
-- Preserve always.
-- Time-box investigations.
-- Optimize for recoverable assets.
-- Learn one abstraction above what AI automates.
+Ship **Job Scout v1.0**.
 
----
+Success means:
 
-## Build Session Format
-
-Every feature follows this order:
-
-1. Mission
-2. One X-Ray concept
-3. Safe Copy
-4. Run
-5. Git commit
-
-Long explanations belong in the Workpaper.
+- Stable job source connected.
+- Real accounting jobs returned.
+- Match scores displayed.
+- Clean Builder Mode workflow preserved.
 
 ---
 
-## Daily Close Requirements
+## Repository Recovery Checkpoint
 
-Before ending a session:
+If starting a new ChatGPT session:
 
-1. Run final tests.
-2. `git status`
-3. `git add .`
-4. `git commit`
-5. `git push`
-6. Update BOOT_CONTEXT.md.
-7. Create today's Workpaper.
-8. Record Recovery Checkpoint.
+1. Open this file.
+2. Paste it into the first message.
+3. Continue in **Builder Mode**.
 
 ---
 
-## Recovery Checkpoint
+## Repository Reconciliation
 
-Current commit: 33fb28b
+Required before every Daily Close.
 
-Next objective:
+Before ending a build session, verify:
 
-Build Job Scout v1.0 using a stable career-page source instead of relying solely on Indeed.
+- Architecture changes reflected.
+- Documentation reconciled.
+- Temporary files cleaned.
+- Git committed.
+- GitHub synced.
+
