@@ -253,3 +253,15 @@ interruption_policy:
   data_integrity: interrupt
   irreversible_change: interrupt
   cosmetic_change: defer
+```
+
+---
+
+# Monthly Calibration
+
+During monthly or quarterly reviews:
+
+- Propose new evidence-based patterns.
+- Remove outdated assumptions.
+- Increase or decrease confidence levels.
+- Keep this document concise and operational.
