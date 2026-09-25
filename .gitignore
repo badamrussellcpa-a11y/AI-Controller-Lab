@@ -1,0 +1,10 @@
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Playwright debug images
+debug_page.png
+
+# VS Code
+.vscode/settings.json
