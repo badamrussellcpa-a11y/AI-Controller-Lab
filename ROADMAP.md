@@ -13,9 +13,9 @@ Build **Job Scout v1.0** — the first working AI agent that finds real accounti
 
 # Current Deliverable
 
-- [ ] Return real Controller and Senior Accountant job listings.
-- [ ] Replace fragile Indeed-only scraping with stable career-page sources.
-- [ ] Score job matches automatically.
+- [ ] Return real Controller and Senior Accountant job listings. (Live Senior Accountant and Accounting Manager candidates now returned; Controller coverage still needs expansion.)
+- [x] Replace fragile Indeed-only scraping with stable career-page sources. (Four Greenhouse employer feeds in the first pilot.)
+- [x] Score job matches automatically. (Transparent keyword evidence; suitability review pending.)
 - [ ] Generate application-ready summaries.
 - [ ] Ship Release v1.0.
 

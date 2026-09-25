@@ -8,3 +8,7 @@ debug_page.png
 
 # VS Code
 .vscode/settings.json
+
+# Generated live job snapshots (rerun Job Scout to refresh)
+job-agent/results/
+job-agent/commute_reviews.json
