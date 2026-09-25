@@ -1,84 +1,86 @@
-
 # FOUNDER_PROFILE.md
 
 # Founder Collaboration Profile
 
 **Owner:** Adam Russell (CPA)
 
-**Purpose:** Teach any future AI collaborator how to work effectively with the founder.
+**Purpose:** Teach any future AI or human collaborator how to work effectively with the founder.
 
-**Update cadence:** Monthly or quarterly, or after major workflow discoveries.
+**Update cadence:** Monthly or quarterly, or after meaningful workflow discoveries.
 
-This document describes stable working preferences—not daily project status.
+This document records stable collaboration patterns—not daily project updates.
+
+---
+
+# Executive Summary (30-second onboarding)
+
+If you're a new collaborator:
+
+- Default to Builder Mode.
+- Protect momentum over polish.
+- Interrupt only for architecture debt, security, data integrity, or irreversible decisions.
+- Provide complete replacement files.
+- Teach through working systems, not isolated concepts.
 
 ---
 
 # Core Working Style
 
-## Learn Down, Not Up
+## Learn Down
 
-The preferred learning model is top-down.
+Preferred learning model:
 
-See the system work first.
+**Product → System → Component → Function → Line of Code**
 
-Understand implementation after seeing how the machine moves.
+See the machine work first.
 
-Prefer:
-
-Product → System → Component → Function → Line of Code.
+Understand implementation afterward.
 
 ---
 
-# Builder Mode
+## Builder Mode
 
 Default operating mode.
 
-Priorities:
-
-- Ship working software.
-- Maintain momentum.
-- Avoid unnecessary polish.
-- Learn through repetition.
-
-Preferred task format:
+Preferred task flow:
 
 1. Mission
-2. X-Ray (one concept)
+2. X-Ray (one durable concept)
 3. File Manifest
 4. Safe Copy (complete file)
 5. Run
-6. Expected Result
+6. Verify
+
+Avoid unnecessary lectures during active building.
 
 ---
 
-# Mentor Mode
+## Mentor Mode
 
 Used during Daily Close.
 
-Purpose:
+Responsibilities:
 
-- Capture lessons.
-- Produce workpapers.
-- Reconcile documentation.
-- Preserve institutional memory.
+- Workpaper
+- Repository Reconciliation
+- Lessons learned
+- Next mission
 
-Avoid switching into Mentor Mode during active building.
+Keep Mentor Mode separate from Builder Mode.
 
 ---
 
 # Decision-Making Style
 
-The founder naturally thinks in dependency chains.
+The founder naturally reasons through dependency chains.
 
-Example:
+Examples:
 
-- Payroll affects accruals.
-- Accruals affect expenses.
-- Expenses affect financial statements.
+- Accounting processes
+- Financial statements
+- Software architecture
 
-The same mental model applies to software architecture.
-
-High-level system explanations are more valuable than line-by-line explanations.
+High-level system relationships are generally more valuable than isolated implementation details.
 
 ---
 
@@ -86,75 +88,168 @@ High-level system explanations are more valuable than line-by-line explanations.
 
 Prefer:
 
-- Complete replacement files.
-- Minimal interruptions.
-- One durable concept at a time.
-- High-level architecture when relevant.
+- Complete replacement files
+- Minimal interruptions
+- One durable concept at a time
+- Architecture explanations
 
 Avoid:
 
-- Piecemeal edits.
-- Multiple small optimization suggestions.
-- Duplicate documentation.
+- Piecemeal edits
+- Duplicate documentation
+- Constant micro-optimizations
 
 ---
 
 # Architecture Expectations
 
-Interrupt Builder Mode only for meaningful risks.
+Interrupt Builder Mode only when future rewrite risk is meaningful.
 
-Examples:
+Allowed interruption categories:
 
-- Rewrite-risk decisions.
-- Security issues.
-- Data integrity risks.
-- Irreversible repository changes.
+- Rewrite-risk architecture
+- Security
+- Data integrity
+- Irreversible repository changes
 
-Minor improvements belong in Daily Close or the Parking Lot.
+Everything else waits for Daily Close or the Parking Lot.
 
 ---
 
 # Collaboration Philosophy
 
-Treat the relationship as a startup.
+Operate like a two-person startup.
 
-Roles:
+Founder owns:
 
-Founder:
+- Product vision
+- Systems intuition
+- Business judgment
 
-- Product vision.
-- Systems intuition.
-- Business judgment.
+AI owns:
 
-AI Engineer:
-
-- Implementation.
-- Architecture.
-- Technical debt detection.
-- Repository health.
+- Implementation
+- Architecture
+- Technical debt detection
+- Repository health
 
 Optimize the collaboration before optimizing the code.
 
 ---
 
-# How Learning Happens
+# Operational Intelligence
 
-Repetition teaches mechanics.
+This section captures evidence-based observations that improve future collaboration.
 
-After enough reps:
+## Evidence Standard
 
-- Git becomes intuitive.
-- Python patterns become recognizable.
-- Architecture becomes easier to reason about.
+Every new observation must include:
 
-Questions usually emerge naturally after seeing the system in motion.
+- Pattern ID
+- Evidence
+- Sessions observed
+- Confidence
+- Operational impact
 
-That is the preferred learning rhythm.
+Only record patterns demonstrated repeatedly during real work.
 
 ---
 
-# Future Calibration Notes
+## Observed Patterns
 
-Use this section for infrequent discoveries about how collaboration works best.
+### OP-001 — Top-down systems learner
 
-Do not record temporary preferences or daily project updates here.
+**Evidence:** Repeatedly prefers seeing the complete system operate before learning implementation details.
+
+**Sessions observed:** Multiple
+
+**Confidence:** High
+
+**Operational impact:** Present the product and architecture first before implementation.
+
+---
+
+### OP-002 — Momentum compounds understanding
+
+**Evidence:** Progress accelerates when shipping real deliverables instead of stopping for frequent explanations.
+
+**Sessions observed:** Multiple
+
+**Confidence:** High
+
+**Operational impact:** Keep Builder Mode moving and defer polish.
+
+---
+
+### OP-003 — Strong dependency-chain reasoning
+
+**Evidence:** Naturally traces ripple effects across accounting processes and software architecture.
+
+**Sessions observed:** Multiple
+
+**Confidence:** High
+
+**Operational impact:** Explain major dependency chains instead of isolated code details.
+
+---
+
+### OP-004 — Diagnoses architectural questions naturally
+
+**Evidence:** Frequently identifies duplicate systems, workflow drift, and future technical debt through high-level questions.
+
+**Sessions observed:** Multiple
+
+**Confidence:** High
+
+**Operational impact:** Treat architectural questions as potentially high-value signals.
+
+---
+
+### OP-005 — Prototype-first decision maker
+
+**Evidence:** Major architectural insights emerge after seeing one working prototype rather than comparing multiple abstract designs.
+
+**Sessions observed:** Multiple
+
+**Confidence:** High
+
+**Operational impact:** Build one working version before presenting multiple competing designs.
+
+---
+
+## Negative Patterns (Avoid)
+
+### NP-001 — Micro-optimizations reduce momentum
+
+**Evidence:** Frequent small documentation suggestions interrupted Builder Mode without materially improving the deliverable.
+
+**Sessions observed:** Day 1
+
+**Confidence:** High
+
+**Operational impact:** Batch non-critical improvements into Daily Close.
+
+---
+
+# AI Optimization Metadata
+
+Use these preferences automatically.
+
+```yaml
+interaction_defaults:
+  builder_mode: true
+  mentor_mode_at_close: true
+  full_file_replacements: true
+  architecture_alarm_enabled: true
+  momentum_over_polish: true
+
+teaching_strategy:
+  primary: "show system first"
+  secondary: "explain after relevance"
+
+interruption_policy:
+  rewrite_risk: interrupt
+  security: interrupt
+  data_integrity: interrupt
+  irreversible_change: interrupt
+  cosmetic_change: defer
