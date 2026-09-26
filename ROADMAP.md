@@ -1,6 +1,6 @@
 # AI Controller Lab Roadmap
 
-**Job Scout v1: in progress; approved redesign not yet implemented.**
+**Job Scout v1: in progress; Task 2 foundation implemented, broader redesign planned.**
 The [product contract](job-agent/master_prompt.md) owns detailed requirements.
 [OPERATING_SYSTEM.md](OPERATING_SYSTEM.md) owns Daily Close and Release Close.
 
@@ -10,6 +10,17 @@ Implemented: four public Greenhouse pilot feeds, deterministic screening and
 weighted evidence, default Top 5 Markdown/JSON reports, standard-library SQLite
 job state, --mark/--history and handled-job exclusion. Browser scripts are earlier
 experiments; the CSV is a separate manual tracker.
+
+Task 2 adds employers.json and validation, canonical IDs and explicit source
+mappings, ACTIVE/BENCH/PAUSED placement, schema v2, opt-in transactional legacy
+migration, and per-source run observations. Four ACTIVE/PILOT employers remain;
+no researched final population or automatic rotation. Normal legacy commands
+stop for explicit migration; private data was not accessed/migrated in this task.
+Source observations distinguish failed fetches (null counts) from observed zero
+yield. Historical job records remain when configuration removes an employer.
+Task 2 verification: 61 tests passed (34 existing regressions, 27 foundation tests),
+including synthetic migration/rollback and simulated four-pilot integration.
+No new live acceptance or broad security scan; real migration remains unauthorized.
 
 At the September 25 checkpoint, 34 tests passed (22 original, eight persistence,
 four URL-security). A standard Codex Security scan reported one low-severity
@@ -25,12 +36,11 @@ suppression, portfolio history or export.
 
 ## Approved milestones
 
-- [x] Task 1: reconcile product specifications and standardize permanent close/
-  recovery procedures (documentation only, September 26). Manual checkpoint pending;
-  use Git to determine whether it was subsequently committed/pushed.
-- [ ] Task 2: separately authorize employer-registry/canonical-identity implementation;
-  first review minimal schema/migration design and synthetic legacy-data tests.
-  Do not assume the pilot is the approved final pool.
+- [x] Task 1: specifications and permanent close/recovery procedures; local checkpoint
+  6ab7fac verified at Task 2 opening. Remote was not queried in Task 2.
+- [x] Task 2: registry/canonical identity/pool/source-observation foundation and
+  versioned schema with synthetic legacy migration/rollback tests. Manual Git
+  checkpoint pending; verify subsequent commit/push from Git.
 - [ ] Research and obtain Adam's approval for initial active target of 10 employers
   and bench; capture dated evidence, unknowns and selection rationale.
 - [ ] Implement broad accounting/finance discovery, REVIEW NEEDED eligibility and
@@ -45,7 +55,7 @@ Task sequence may be refined at each authorized design review without expanding
 the product contract. Registry, schema, lifecycle and export changes must be
 tested before touching real history.
 
-## Redesigned v1 acceptance gates — all remain open
+## Redesigned v1 acceptance gates — release remains open
 
 - [ ] Approved configurable Greenhouse employer population, active target 10 and
   bench/paused operation; evidence-backed selection and visible source health.
@@ -59,8 +69,9 @@ tested before touching real history.
   suppresses its canonical employer while sibling job states remain truthful.
   Rejection/withdrawal/closure, unresolved/resolved offers, multiple applications,
   explicit override and reopening preserve history and correct suppression.
-- [ ] Existing SQLite records survive tested migration; separate employer identity
-  does not implicitly merge parents/subsidiaries or similarly named companies.
+- [ ] Existing private SQLite records survive separately authorized migration.
+  Synthetic preservation/rollback and explicit canonical identity are verified in
+  Task 2; private backup/restoration planning and real migration remain outstanding.
 - [ ] Portfolio persists factual fields, null unknowns, manual/recruiter opportunities
   and interview/outcome updates without fabricating applications or career evidence.
 - [ ] Optional workbook has Open Opportunities, Application Portfolio and Employer

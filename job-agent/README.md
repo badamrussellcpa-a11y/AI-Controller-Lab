@@ -2,10 +2,12 @@
 
 ## Current versus planned
 
-The current local pilot is operational; **full v1 remains in progress**. The
-[approved product contract](master_prompt.md) plans an approved employer registry,
-broad discovery, employer suppression, factual application portfolio and optional
-private Excel export. None is implemented by the documentation task. Current Top 5
+The current local pilot has a validated employer registry, canonical employer
+identity, explicit pool placement, schema v2, synthetic-tested migration and
+observed source-run persistence. **Full v1 remains in progress**. The
+[approved product contract](master_prompt.md) still plans the researched final
+population, broad discovery, employer suppression, factual application portfolio
+and optional private Excel export. Current Top 5
 behavior remains intact; it is no longer the eventual product acceptance target.
 Permanent close/recovery procedures live in
 [OPERATING_SYSTEM.md](../OPERATING_SYSTEM.md), not this operating guide.
@@ -15,6 +17,11 @@ weights in `search_rules.md`, and writes a readable shortlist plus a JSON snapsh
 No paid API, cloud database, extra Python packages, or application submissions.
 
 ## Run from the AI-Controller-Lab terminal
+
+Fresh databases initialize schema v2. An existing legacy database deliberately
+stops before fetching or updating jobs; it requires separately authorized migration
+after private backup/restoration preparation (see below). Never delete history to
+get past that stop. Task 2 did not migrate Adam's private database.
 
 If Python is already available in your VS Code terminal:
 
@@ -40,18 +47,24 @@ not inputs to this live search and are never overwritten.
 ## Options
 
 - `--all-locations`: include target roles outside the initial location screen.
-- `--boards rocketlab spacex`: choose public Greenhouse board tokens.
+- `--boards rocketlab spacex`: choose explicitly registered ACTIVE board tokens.
+  Unknown, BENCH or PAUSED sources now fail visibly instead of guessing identity.
+- `--registry PATH`: use another validated JSON registry; default employers.json.
 - `--limit 20`: override the default five-result shortlist to show at most 20 candidates.
 - `--output PATH`: write snapshots to a different folder.
 - `--state-file PATH`: use a different SQLite state file (parent folder must exist).
 - `--mark JOB_ID STATE`: update a saved job without fetching feeds.
 - `--history`: print all saved job records and their current states as JSON.
+- `--migrate-state`: explicit existing-database schema migration only, no fetch;
+  mutually exclusive with mark/history. Requires backup/restoration preparation
+  and explicit approval before use on real data.
 
 Default pilot coverage: Rocket Lab, SpaceX, Figma, and Reddit. These are starter
 data sources, not endorsements of employers or a complete market search. A board
 can legitimately have zero target roles. Source failures are visible in the report.
 Exit codes: 0 = all feeds succeeded; 1 = all feeds failed; 2 = partial feed failure.
-Exit 3 means application-state access or validation failed; no fresh report is
+Exit 3 means registry/state access or validation failed (including no ACTIVE
+sources or a legacy schema needing explicit migration); no fresh report is
 generated. Mark/history commands return 0 on success and 3 on failure.
 
 ## Application state and history
@@ -83,6 +96,9 @@ All fetched target-role records are retained, including those outside the locati
 filter, handled jobs, and jobs absent from later feeds. Each record keeps current
 state, latest listing details, first/last seen times, and the last status-change
 time. This is a current-state register, not a full log of every status transition.
+History adds a top-level employer_id; new report job records also carry employer_id.
+Existing fields and stable board:job IDs remain. Migration preserves the original
+snapshot text; a later fetch updates listing details as before.
 Existing timestamped reports are preserved; old reports can still show a job that
 you subsequently handled. Identity is based on the source ID; an employer repost
 with a new ID is a new record. The separate sample CSV is not imported.
@@ -120,7 +136,7 @@ JSON readers recover the original text.
 ## Verify changes
 
 ```powershell
-python -m unittest discover -s .\job-agent -p "test_job_scout.py" -v
+python -m unittest discover -s .\job-agent -p "test_*.py" -v
 ```
 
 Substitute the verified interpreter path above if `python` is unavailable.
@@ -130,7 +146,102 @@ states, all exclusion states, unknown IDs, reopening, absent-job retention,
 transaction rollback, corrupt state, and Windows history output. Tests use
 temporary databases and never modify your default application history.
 
-## Verification and release status — September 25, 2026 (Pacific)
+## Employer registry and pool foundation — Task 2
+
+employers.json is human-reviewed configuration, not employer research or executable
+instructions. Its format version is 1 (separate from SQLite schema version 2).
+The shipped entries are Rocket Lab, SpaceX, Figma and Reddit, all ACTIVE/PILOT,
+not Adam's final approved Top 10. No employer statistics were researched.
+
+Each entry requires employer_id, display_name, greenhouse_boards (one or more
+explicit tokens), approval_status and pool. Canonical IDs use lowercase letters/
+digits/hyphens, start with a letter and are at most 64 characters. They are stable
+identity keys, independent of names, board tokens and job IDs. A display-name
+change retains identity; no parent/subsidiary/name-based grouping occurs.
+Duplicate IDs, duplicate JSON keys, ambiguous board mappings (including case-only
+duplicates), invalid tokens and unknown fields fail validation.
+
+Approval status is PILOT, APPROVED, PENDING or REJECTED. PENDING/REJECTED entries
+must be PAUSED. Multiple boards belong to the same employer only through explicit
+reviewed mappings. ACTIVE sources with PILOT/APPROVED status are fetched by default;
+BENCH/PAUSED are retained but not fetched, including through --boards. Fewer than
+ten ACTIVE employers is valid and the report shows the configured count.
+No yield-based pool movement, application suppression or automatic rotation exists.
+
+Optional text/null fields: approval_date, industry, size_band, company_stage_type,
+la_evidence, remote_evidence, selection_rationale, research_reference,
+research_checked_date and confidence_notes. Dates use YYYY-MM-DD when known.
+Keep secrets, private contacts and application notes out of this tracked registry.
+Approval labels record Adam's reviewed decision; software cannot confer approval.
+
+Search startup synchronizes explicit configuration to SQLite. Removed entries/
+mappings become configured=0, retaining their last pool placement and historical
+jobs/observations. No history is deleted. Mark/history do not need the current
+registry once the database is v2. A previously persisted board cannot be reassigned
+to another employer by editing JSON; stop for a separately reviewed correction.
+
+## Schema and migration foundation
+
+SQLite PRAGMA user_version identifies the schema. The original jobs-only layout
+is logical v1, recognized with user_version 0 (old unversioned files) or 1.
+New databases use version 2: employers, employer_sources, jobs and source_runs.
+Jobs retain all prior fields plus employer_id/source_board with foreign keys.
+No portfolio or application-event tables have been added.
+
+Normal run/mark/history commands refuse legacy migration. Unsupported versions,
+unrecognized/partial layouts and integrity failures stop without resetting state.
+Schema recognition is intentionally strict; an independently altered schema needs
+review rather than an attempted best-effort migration.
+
+Explicit migration copies existing IDs, states, raw snapshot text and all three
+timestamps unchanged, mapping only source prefixes present in the supplied registry.
+It never infers identity from company names or invents application dates/events.
+DDL, copied records and version update share a transaction; any failure rolls back.
+No source observations are backfilled. Running migration again on valid v2 is a no-op.
+
+Before any future real migration: stop Scout, obtain explicit Adam authorization,
+make an approved private SQLite-consistent backup (including any needed journal/WAL
+state), establish a restoration plan and test restoration as appropriate. Rehearse
+on an approved copy before touching the original. Git does not back up this data.
+Do not run a migration on the real default database as part of Task 2.
+
+For an existing **synthetic test database only**, the command shape is:
+
+```powershell
+python .\job-agent\job_scout.py --state-file "<synthetic-database-path>" --registry "<synthetic-registry-path>" --migrate-state
+```
+
+These are placeholders, not a command to paste against real history.
+
+## Source-run observations
+
+Each completed run stores one observation per attempted board: UTC attempt timestamp,
+fetch success, count of normalized postings returned, count of unique currently
+recognized target roles, and an error category on failure. Relevant counts are
+before location, job-state and Top-5 filtering. Repeated IDs count once as relevant;
+postings count reflects the fetched list. Invalid feed responses are failed fetches.
+
+Successful empty feeds have zero counts; failures have NULL counts, never zero
+yield. Only the exception class/category is persisted, not arbitrary error payloads.
+Source mappings link observations to employers. Configuration/research notes remain
+separate from observed facts. No earlier yield, employer scoring or rotation is
+inferred. There is no analysis/export UI yet.
+
+Job refreshes and source observations commit together. An interrupted process or
+failed state write is not a completed observation batch; an old report is not proof
+that the current run succeeded. Existing per-feed report health remains available.
+
+## Task 2 verification — September 26, 2026
+
+61 tests pass: 34 existing regressions and 27 focused registry/migration/observation
+tests. Migration tests use synthetic temporary databases, preserve original values,
+and verify byte-for-byte rollback after unmapped identities and injected failure.
+Separate-process tests verify persistence and handled-state exclusion. Four-pilot
+integration uses simulated feed input; no new live acceptance or security scan
+is claimed. No private application database was opened, migrated or modified.
+Full v1 acceptance remains open.
+
+## Historical verification — September 25, 2026 (Pacific)
 
 Historical checkpoint evidence: 34 tests passed (22 original, eight persistence,
 four URL-security). The standard Codex Security scan completed with one low-severity

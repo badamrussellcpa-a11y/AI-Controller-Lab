@@ -8,13 +8,13 @@ from pathlib import Path
 import re
 import sys
 import sqlite3
-from application_state import DEFAULT_PATH, FRESH_STATES, STATES, mark_job, read_history, record_jobs
+from application_state import DEFAULT_PATH, FRESH_STATES, STATES, mark_job, read_history, record_jobs, migrate_database
+from employer_registry import DEFAULT_REGISTRY, load_registry, select_sources
 from urllib.error import URLError
 from urllib.parse import quote, urlencode
 from scraper import fetch_jobs, validate_application_url
 
 ROOT = Path(__file__).resolve().parent
-BOARDS = {"rocketlab": "Rocket Lab", "spacex": "SpaceX", "figma": "Figma", "reddit": "Reddit"}
 PATTERNS = {
     "Month-end close": r"\bmonth[ -]end\b|\bmonthly clos(?:e|ing)\b",
     "General ledger ownership": r"\bgeneral ledger\b|\bGL\b",
@@ -184,6 +184,8 @@ def render_report(run):
     lines += ["Ranked by accounting evidence and role priority; commute checks do not change ranking or eligibility.",
               "Default: up to five jobs to review. Only NEW and SHORTLISTED jobs are eligible; previously seen unhandled jobs can reappear.", ""]
     lines += ["", "## Source health", ""]
+    if "active_employer_count" in run:
+        lines.append(f"Configured ACTIVE employers: {run['active_employer_count']} (fewer than ten is valid; pilot entries are not the final approved pool).")
     for source in run["sources"]:
         lines.append(f"- {md(source['board'])}: {md(source['status'])}")
     if not run["jobs"]:
@@ -216,7 +218,8 @@ def render_report(run):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--boards", nargs="+", default=list(BOARDS), help="Greenhouse board tokens")
+    parser.add_argument("--boards", nargs="+", help="ACTIVE Greenhouse board tokens explicitly mapped in the registry")
+    parser.add_argument("--registry", type=Path, default=DEFAULT_REGISTRY)
     parser.add_argument("--all-locations", action="store_true")
     parser.add_argument("--limit", type=int, default=5)
     parser.add_argument("--output", type=Path, default=ROOT / "results")
@@ -226,10 +229,16 @@ def main(argv=None):
     actions.add_argument("--mark", nargs=2, metavar=("JOB_ID", "STATE"),
                          help=f"Set a known job's state without fetching feeds: {', '.join(STATES)}")
     actions.add_argument("--history", action="store_true", help="Print saved records as JSON without fetching feeds")
+    actions.add_argument("--migrate-state", action="store_true",
+                         help="Explicit schema migration only; requires approved private backup/restoration plan")
     args = parser.parse_args(argv)
     if args.limit < 1:
         parser.error("--limit must be positive")
     try:
+        if args.migrate_state:
+            migrate_database(args.state_file, load_registry(args.registry))
+            print("Application-state schema is version 2; no feeds fetched.")
+            return 0
         if args.mark:
             mark_job(args.state_file, *args.mark)
             print(f"{args.mark[0]}: {args.mark[1]}")
@@ -238,7 +247,11 @@ def main(argv=None):
             # ASCII escapes keep JSON portable through Windows console encodings.
             print(json.dumps(read_history(args.state_file), indent=2, ensure_ascii=True))
             return 0
-        record_jobs(args.state_file, [])  # Validate state before fetching any feeds.
+        registry = load_registry(args.registry)
+        selected_sources = select_sources(registry, args.boards)
+        if not selected_sources:
+            raise ValueError("No ACTIVE sources configured; no feeds fetched")
+        record_jobs(args.state_file, [], registry)  # Validate state before any feeds.
     except (OSError, ValueError, sqlite3.Error) as error:
         print(f"Application state unavailable; stopped without a fresh shortlist ({error})", file=sys.stderr)
         return 3
@@ -249,26 +262,39 @@ def main(argv=None):
     except (OSError, ValueError) as error:
         print(f"Optional commute notes unavailable; continuing job search ({error})", file=sys.stderr)
         commute_reviews = {}
-    sources, candidates, seen = [], [], set()
+    sources, candidates, seen, observations = [], [], set(), []
     fetched = 0
-    for board in dict.fromkeys(args.boards):
+    for board, employer in selected_sources.items():
+        observed_at = datetime.now(timezone.utc).isoformat()
         try:
-            jobs = fetch_jobs(board, BOARDS.get(board, board))
+            jobs = fetch_jobs(board, employer["display_name"])
+            if any(not isinstance(job.get("id"), str) or not job["id"].startswith(board + ":")
+                   or not job["id"].split(":", 1)[1] for job in jobs):
+                raise ValueError("Source returned an inconsistent job identity")
         except (URLError, TimeoutError, OSError, ValueError, KeyError) as error:
             sources.append({"board": board, "status": f"FAILED: {error}", "ok": False})
+            observations.append({"board": board, "observed_at": observed_at, "success": False,
+                                 "fetched_count": None, "relevant_count": None,
+                                 "error_kind": type(error).__name__})
             print(f"{board}: failed ({error})", file=sys.stderr)
             continue
         sources.append({"board": board, "status": f"OK — {len(jobs)} postings", "ok": True})
         fetched += len(jobs)
+        relevant_count = 0
         for job in jobs:
             if job["id"] in seen:
                 continue
             seen.add(job["id"])
             result = evaluate(job, weights, rejects)
             if result:
+                result["employer_id"] = employer["employer_id"]
                 candidates.append(result)
+                relevant_count += 1
+        observations.append({"board": board, "observed_at": observed_at, "success": True,
+                             "fetched_count": len(jobs), "relevant_count": relevant_count,
+                             "error_kind": None})
     try:
-        statuses = record_jobs(args.state_file, candidates)
+        statuses = record_jobs(args.state_file, candidates, registry, observations)
     except (OSError, ValueError, sqlite3.Error) as error:
         print(f"Application state unavailable; stopped without a fresh shortlist ({error})", file=sys.stderr)
         return 3
@@ -279,7 +305,8 @@ def main(argv=None):
     selected = select_shortlist(eligible, commute_preferences, commute_reviews, args.limit)
     now = datetime.now(timezone.utc)
     run = {"retrieved_at": now.isoformat(), "fetched_count": fetched, "target_count": len(candidates),
-           "sources": sources, "jobs": selected, "commute_preferences": commute_preferences}
+           "sources": sources, "jobs": selected, "commute_preferences": commute_preferences,
+           "active_employer_count": sum(e["pool"] == "ACTIVE" for e in registry["employers"])}
     args.output.mkdir(parents=True, exist_ok=True)
     stem = args.output / f"shortlist-{now.strftime('%Y%m%d-%H%M%S-%f')}"
     stem.with_suffix(".json").write_text(json.dumps(run, indent=2, ensure_ascii=False), encoding="utf-8")

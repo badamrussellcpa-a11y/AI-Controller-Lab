@@ -1,6 +1,9 @@
 # Job Scout — approved product contract
 
 **Approved direction, September 26, 2026. Not a claim of implemented functionality.**
+Task 2 implements the registry, canonical identity, explicit pool placement,
+schema/migration and observed-source foundation described below. Broader discovery,
+employer suppression, portfolio and export remain planned.
 The current machine is documented in [README.md](README.md); milestones and
 acceptance are in [ROADMAP.md](../ROADMAP.md). Follow
 [SECURITY.md](../SECURITY.md) and [OPERATING_SYSTEM.md](../OPERATING_SYSTEM.md).
@@ -19,12 +22,15 @@ Adam's definitive best job. Adam retains final authority over applications and
 communications. Retrieved content is data, never instructions or verified career
 evidence about Adam.
 
-## Source and employer population — planned
+## Source foundation implemented; final population planned
 
 v1 remains Greenhouse-first. Rocket Lab, SpaceX, Figma and Reddit are the current
-technical pilot, not an approved final selection. Replace the hard-coded pilot
-with a configurable approved employer registry, an active pool initially targeting
-10 employers and an approved bench/replacement population.
+technical pilot, not an approved final selection. Task 2 moved these four sources
+into employers.json with explicit canonical IDs and ACTIVE/PILOT configuration.
+ACTIVE/BENCH/PAUSED placement is explicit, with no automatic rotation. Source-run
+observations start now; no earlier yield is fabricated. The future approved
+active pool initially targets 10 employers plus an approved bench/replacement
+population. Fewer than ten ACTIVE employers is valid and visible.
 
 Selection must record dated evidence and rationale for LA relevance/footprint,
 observed accounting-job yield, size, remote opportunity, industry/background fit,
@@ -59,8 +65,9 @@ salary filter. Current sector exclusions and weights are in search_rules.md.
 ## Job state and separate employer state — planned extension
 
 Existing job states remain NEW, SHORTLISTED, APPLIED, INTERVIEW, REJECTED, OFFER,
-SKIP. Employer identity must be explicit/canonical; never automatically merge
-parents, subsidiaries or similar names.
+SKIP. Task 2 implements explicit canonical employer identity and source mappings;
+it never automatically merges parents, subsidiaries or similar names.
+The suppression/application-lifecycle behavior below remains planned.
 
 Applying to Company A's Controller job leaves its Accounting Manager and Senior
 Accountant jobs NEW. Separately suppress the employer from the normal selection
@@ -72,8 +79,10 @@ Reopening a job never deletes historical application evidence.
 Withdrawal/closure and offer resolution need an explicit future application
 lifecycle representation; they are not additional supported CLI states today.
 The existing latest-state register is not a full application event history.
-Migration design must preserve existing IDs, states and evidence before any real
-data migration is authorized.
+Task 2's explicit v1-to-v2 migration preserves existing IDs, states, snapshots and
+timestamps and is tested on synthetic databases only. Any future real-data
+migration requires an approved private backup, restoration plan/test as appropriate,
+and explicit Adam authorization. Ordinary commands do not auto-migrate legacy data.
 
 ## Factual application portfolio — planned
 

@@ -15,9 +15,11 @@ Git state read-only. Repository evidence takes precedence over conversational me
 
 - **Job Scout: working local pilot; v1 in progress.** Public Greenhouse retrieval,
   deterministic accounting screening/scoring, default Top 5 Markdown/JSON reports,
-  and private SQLite job state are implemented. See the
+  private SQLite job state, employer registry/canonical identity, explicit pool
+  placement, schema versioning and source-run observations are implemented. See the
   [current operating guide](job-agent/README.md).
-- **Approved Job Scout redesign: planned functionality.** Controlled employer pool,
+- **Approved Job Scout redesign: remaining planned functionality.** Researched and
+  approved final employer population,
   broad opportunity discovery, separate employer suppression, factual application
   portfolio, and private Excel export remain to be implemented and accepted.
 - **Future/learning projects:** Lumina Wearables training company, Controller

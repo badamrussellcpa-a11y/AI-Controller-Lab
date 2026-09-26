@@ -2,70 +2,73 @@
 
 **Updated September 26, 2026. Job Scout v1 remains in progress.**
 
-Permanent recovery and close procedures live only in
-[OPERATING_SYSTEM.md](OPERATING_SYSTEM.md). Product authority:
-[job-agent/master_prompt.md](job-agent/master_prompt.md); acceptance:
-[ROADMAP.md](ROADMAP.md); current commands: [job-agent/README.md](job-agent/README.md).
+Permanent recovery/Daily Close/Release Close: [OPERATING_SYSTEM.md](OPERATING_SYSTEM.md).
+Security: [SECURITY.md](SECURITY.md). Product: [job-agent/master_prompt.md](job-agent/master_prompt.md).
+Acceptance: [ROADMAP.md](ROADMAP.md). Commands: [job-agent/README.md](job-agent/README.md).
 
 ## What exists
 
-The working pilot uses scraper.py (public Greenhouse ingestion), job_scout.py
-(deterministic screening/scoring and default Top 5 Markdown/JSON reports), and
-application_state.py (local SQLite job-state register). Rocket Lab, SpaceX,
-Figma and Reddit are technical pilot sources, not the approved final employer pool.
-Only NEW/SHORTLISTED jobs appear in fresh recommendations. All saved target-role
-records remain, including handled/absent jobs; storage is latest state, not a
-complete application event history. Browser scripts and the sample CSV are
-separate legacy/manual artifacts.
+Task 2 adds a standard-library JSON employer registry with explicit canonical IDs,
+reviewed Greenhouse mappings and ACTIVE/BENCH/PAUSED placement. The four employers
+remain ACTIVE/PILOT sources, not the approved final Top 10. No automatic rotation.
 
-Task 1 updated specifications and governance only. Approved registry, broad
-discovery, employer suppression, factual portfolio and private Excel export remain
-planned. No code/schema/data migration, employer selection or new dependency was
-part of Task 1. Old Top-5/application-writing requirements are superseded.
+SQLite schema v2 stores employers, source mappings, existing job state linked to
+canonical identity and observed source-run facts. Failures have null yield counts;
+successful zero yield is distinct. No historical observations are fabricated.
+Configuration removal retains historical records; persisted source reassignment
+fails rather than guessing identity.
 
-## Verified checkpoint and limits
+Explicit transactional migration recognizes the original jobs-only schema as v1
+(user_version 0 or 1), preserving IDs, states, snapshots and timestamps. Normal
+run/mark/history commands stop on legacy schema; migration is a separate opt-in.
+No private database was opened or migrated. A filename-only check found no default
+application_state.sqlite3 or sidecars at the expected path before/after testing;
+no search for private databases elsewhere was performed.
 
-At Task 1 opening, local HEAD was 93264d0, branch main tracking origin/main,
-with a clean tree and no local tags. Remote state was not queried this task.
-Identify any later checkpoint from Git; do not treat this prior hash as current.
+The original role/location/scoring/Top-5 pipeline and seven job states remain.
+Only NEW/SHORTLISTED qualify for fresh recommendations. URL validation and Markdown
+hardening remain unchanged. Browser scripts and sample CSV are separate artifacts.
 
-Recorded September 25 evidence: 34 Job Scout tests passed; standard security scan
-completed with one low-severity URL/Markdown issue; targeted fix and regression
-tests passed. Ingestion validates URLs; report output revalidates/encodes them.
-No subsequent full security scan is claimed.
+## Verified checkpoint and results
 
-Recorded isolated live acceptance: four feeds, 3,428 postings, nine target roles;
-marking one APPLIED reduced five recommendations to four while retaining its
-state/history. This tested job-level exclusion, not planned employer suppression.
-Private acceptance artifacts are not part of a fresh clone; see the operating
-README and dated WP-006 for recorded evidence.
+Task 2 opened clean on main tracking origin/main at
+6ab7fac1a4ff8d6845a2ef9f96bdc669c716a381 (Task 1 documentation checkpoint).
+Remote state was not queried. Task 2 commit/push is left to Adam; verify later HEAD
+and remote state from Git rather than assuming a checkpoint succeeded.
 
-Task 1 verification checks documentation scope, diff whitespace and unchanged
-runtime-parsed search rules. Runtime tests and live acceptance were not rerun.
-No v1 release is established. Task 1's commit/push is left to Adam; confirm it
-from Git at the next opening rather than assuming completion.
+61 automated tests pass: 34 original regressions plus 27 focused foundation tests.
+Evidence includes synthetic legacy migration, byte-for-byte rollback after late
+failure, future/partial schema refusal, preserved snapshots/timestamps, explicit
+source identity, no automatic pool movement, restart persistence, null failed-fetch
+yield and simulated four-pilot integration. All test databases/reports are temporary.
 
-## Open items and decisions
+Diff/scope/privacy checks accompany the checkpoint; no dependencies or broad
+security scan were added. Current SECURITY policy covers configuration as data,
+parameterized SQL, least privilege and approval for real-data migration; no policy
+change was needed. Historical security scan/URL remediation and live APPLIED
+acceptance remain recorded in the operating README and WP-006; no new live test
+or redesigned release acceptance is claimed.
 
-All redesigned acceptance gates remain open. Initial Top 10 and bench need research
-and Adam approval. Canonical identity, migration safety, application lifecycle
-(including withdrawal/closure and resolved offers), override semantics and export
-security need bounded implementation/testing. Preserve existing private history.
-No commute times are newly verified. No runtime application-writing feature is
-required. No new security scan or real database access occurred in Task 1.
+## What remains open
+
+The final researched/approved Top 10 and bench, broad discovery, employer active-
+application suppression, portfolio, recruiter/manual opportunities, diversification
+analysis and Excel export remain planned. Job history is still a latest-state
+register, not a complete application event journal. No application-writing runtime
+feature is required. Real migration requires an approved private backup,
+restoration plan/test as appropriate and explicit Adam authorization.
+Do not delete a database or casually remap a source to bypass a failure.
 
 ## Exact next-session task
 
-Verify Adam's Task 1 documentation checkpoint and working-tree state. Then, only
-under a separately authorized Task 2, review the minimum employer-registry and
-canonical-identity design, including a versioned SQLite migration and tests using
-synthetic legacy records, before implementing that bounded foundation. Do not
-research/select the final employers, migrate real application data, or implement
-broad discovery, employer suppression, portfolio or Excel export in that task
-without explicit scope approval.
+Verify Adam's Task 2 checkpoint and clean working-tree state. Review the completed
+registry/migration foundation and obtain Adam's bounded Task 3 scope before further
+implementation. Do not research/select final employers, migrate real application
+data, broaden discovery, add employer suppression, portfolio or Excel export
+without that separate authorization.
 
 ## Learning context
 
-[WP-007](workpapers/WP-007.md) explains this documentation/governance checkpoint
-and the actual machine. Earlier workpapers are dated history, not competing
-current product requirements or operating procedures.
+[WP-008](workpapers/WP-008.md) explains Task 2 from the plain-English machine to
+components and actual code patterns. Earlier workpapers are historical learning
+records, not competing current requirements or permanent procedures.

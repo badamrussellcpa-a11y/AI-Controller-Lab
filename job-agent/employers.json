@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "employers": [
+    {
+      "employer_id": "emp-rocket-lab",
+      "display_name": "Rocket Lab",
+      "greenhouse_boards": [
+        "rocketlab"
+      ],
+      "approval_status": "PILOT",
+      "approval_date": null,
+      "pool": "ACTIVE",
+      "industry": null,
+      "size_band": null,
+      "company_stage_type": null,
+      "la_evidence": null,
+      "remote_evidence": null,
+      "selection_rationale": "Existing technical pilot source; not the approved final employer population.",
+      "research_reference": null,
+      "research_checked_date": null,
+      "confidence_notes": "No employer research performed for this registry foundation."
+    },
+    {
+      "employer_id": "emp-spacex",
+      "display_name": "SpaceX",
+      "greenhouse_boards": [
+        "spacex"
+      ],
+      "approval_status": "PILOT",
+      "approval_date": null,
+      "pool": "ACTIVE",
+      "industry": null,
+      "size_band": null,
+      "company_stage_type": null,
+      "la_evidence": null,
+      "remote_evidence": null,
+      "selection_rationale": "Existing technical pilot source; not the approved final employer population.",
+      "research_reference": null,
+      "research_checked_date": null,
+      "confidence_notes": "No employer research performed for this registry foundation."
+    },
+    {
+      "employer_id": "emp-figma",
+      "display_name": "Figma",
+      "greenhouse_boards": [
+        "figma"
+      ],
+      "approval_status": "PILOT",
+      "approval_date": null,
+      "pool": "ACTIVE",
+      "industry": null,
+      "size_band": null,
+      "company_stage_type": null,
+      "la_evidence": null,
+      "remote_evidence": null,
+      "selection_rationale": "Existing technical pilot source; not the approved final employer population.",
+      "research_reference": null,
+      "research_checked_date": null,
+      "confidence_notes": "No employer research performed for this registry foundation."
+    },
+    {
+      "employer_id": "emp-reddit",
+      "display_name": "Reddit",
+      "greenhouse_boards": [
+        "reddit"
+      ],
+      "approval_status": "PILOT",
+      "approval_date": null,
+      "pool": "ACTIVE",
+      "industry": null,
+      "size_band": null,
+      "company_stage_type": null,
+      "la_evidence": null,
+      "remote_evidence": null,
+      "selection_rationale": "Existing technical pilot source; not the approved final employer population.",
+      "research_reference": null,
+      "research_checked_date": null,
+      "confidence_notes": "No employer research performed for this registry foundation."
+    }
+  ]
+}

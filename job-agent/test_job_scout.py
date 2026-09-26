@@ -15,11 +15,26 @@ from job_scout import assess_commute, render_report, select_shortlist
 from urllib.parse import parse_qs, urlparse
 
 
+# Explicit synthetic mappings: test fixtures must not teach production identity guessing.
+TEST_REGISTRY = {"version": 1, "employers": [
+    {"employer_id": "fixture-" + board, "display_name": board.title(),
+     "greenhouse_boards": [board], "approval_status": "PILOT", "pool": "ACTIVE"}
+    for board in ("test", "good", "bad")]}
+
+
+def registry_file(folder):
+    path = Path(folder) / "employers.json"
+    path.write_text(json.dumps(TEST_REGISTRY), encoding="utf-8")
+    return str(path)
+
+
 def main(argv):
     # Existing search tests also get isolated persistent state, never the user's DB.
     if "--state-file" not in argv:
         folder = Path(argv[argv.index("--output") + 1])
         argv = [*argv, "--state-file", str(folder / "state.sqlite3")]
+    if "--registry" not in argv:
+        argv = [*argv, "--registry", registry_file(Path(argv[argv.index("--output") + 1]))]
     return scout_main(argv)
 
 
@@ -70,9 +85,9 @@ class ScoutTests(unittest.TestCase):
 
     def test_partial_failure_and_duplicates(self):
         with tempfile.TemporaryDirectory() as folder:
-            with patch("job_scout.fetch_jobs", side_effect=[[fixture(), fixture()], OSError("offline")]):
+            with patch("job_scout.fetch_jobs", side_effect=[[fixture(id="good:1"), fixture(id="good:1")], OSError("offline")]):
                 self.assertEqual(main(["--boards", "good", "bad", "--output", folder]), 2)
-            report = json.loads(next(Path(folder).glob("*.json")).read_text(encoding="utf-8"))
+            report = json.loads(next(Path(folder).glob("shortlist-*.json")).read_text(encoding="utf-8"))
             self.assertEqual(len(report["jobs"]), 1)
             self.assertEqual(len(report["sources"]), 2)
 
@@ -85,7 +100,7 @@ class ScoutTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             with patch("job_scout.fetch_jobs", return_value=[fixture(location="Austin, TX")]):
                 self.assertEqual(main(["--boards", "test", "--output", folder]), 0)
-            report = json.loads(next(Path(folder).glob("*.json")).read_text(encoding="utf-8"))
+            report = json.loads(next(Path(folder).glob("shortlist-*.json")).read_text(encoding="utf-8"))
             self.assertEqual(report["jobs"], [])
 
 
@@ -163,7 +178,7 @@ class ApplicationStateTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.folder = Path(self.temp.name)
         self.state = self.folder / "state.sqlite3"
-        self.args = ["--state-file", str(self.state)]
+        self.args = ["--state-file", str(self.state), "--registry", registry_file(self.folder)]
 
     def search(self, jobs, *extra):
         with patch("job_scout.fetch_jobs", return_value=jobs):
@@ -205,7 +220,7 @@ class ApplicationStateTests(unittest.TestCase):
         self.assertEqual(read_history(self.state), before)
 
     def test_mark_validation_history_and_reopen_without_fetch(self):
-        record_jobs(self.state, [fixture()])
+        record_jobs(self.state, [fixture()], TEST_REGISTRY)
         with patch("job_scout.fetch_jobs") as fetch:
             for job_id, status in [("test:1", "INVALID"), ("missing", "APPLIED")]:
                 self.assertEqual(scout_main([*self.args, "--mark", job_id, status]), 3)
@@ -227,7 +242,7 @@ class ApplicationStateTests(unittest.TestCase):
         self.assertEqual(list(self.folder.glob("shortlist-*")), [])
 
     def test_history_survives_windows_console_encoding(self):
-        record_jobs(self.state, [fixture(description="Non\u2011breaking hyphen and \u5de5\u4f5c")])
+        record_jobs(self.state, [fixture(description="Non\u2011breaking hyphen and \u5de5\u4f5c")], TEST_REGISTRY)
         output = io.BytesIO()
         stream = io.TextIOWrapper(output, encoding="cp1252")
         with redirect_stdout(stream):
@@ -237,9 +252,9 @@ class ApplicationStateTests(unittest.TestCase):
                          "Non\u2011breaking hyphen and \u5de5\u4f5c")
 
     def test_transaction_rolls_back_on_invalid_record(self):
-        record_jobs(self.state, [fixture()])
+        record_jobs(self.state, [fixture()], TEST_REGISTRY)
         with self.assertRaises(KeyError):
-            record_jobs(self.state, [fixture(id="test:2"), {}])
+            record_jobs(self.state, [fixture(id="test:2"), {}], TEST_REGISTRY)
         self.assertEqual([r["id"] for r in read_history(self.state)], ["test:1"])
 
     def test_acceptance_across_processes(self):
@@ -326,7 +341,7 @@ class CommuteTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             with patch("job_scout.fetch_jobs", return_value=jobs):
                 self.assertEqual(main(["--boards", "test", "--output", folder]), 0)
-            report = json.loads(next(Path(folder).glob("*.json")).read_text(encoding="utf-8"))
+            report = json.loads(next(Path(folder).glob("shortlist-*.json")).read_text(encoding="utf-8"))
             self.assertEqual(len(report["jobs"]), 5)
             rendered = next(Path(folder).glob("*.md")).read_text(encoding="utf-8")
             self.assertNotIn("Shortfall", rendered)
