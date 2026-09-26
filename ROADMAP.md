@@ -1,141 +1,98 @@
-
-
-## Daily close reconciliation - September 25, 2026
-
-This checkpoint supersedes earlier test-count and security-scan status notes below.
-All 34 Job Scout tests pass (22 original, eight persistence, four URL-security
-tests). The standard repository security scan completed and reported one
-low-severity application-URL/Markdown injection finding. The narrow fix validates
-URLs at ingestion and revalidates/encodes them at report output; focused regression
-tests pass. This is targeted remediation evidence, not a subsequent full scan.
-
-The recorded isolated live APPLIED acceptance test passed. Full Job Scout v1
-acceptance remains open: demonstrate live Controller coverage and review whether
-the existing summaries are application-ready. No release tag is declared here.
-The daily checkpoint includes application-state persistence, URL hardening, tests,
-and the Mentor Mode workpaper. Private databases and generated reports remain
-outside Git. Commit/push completion must be verified from Git, not this note.
-
 # AI Controller Lab Roadmap
 
-**Current Version:** v1.0
+**Job Scout v1: in progress; approved redesign not yet implemented.**
+The [product contract](job-agent/master_prompt.md) owns detailed requirements.
+[OPERATING_SYSTEM.md](OPERATING_SYSTEM.md) owns Daily Close and Release Close.
 
----
+## Current baseline and evidence
 
-# Current Mission
+Implemented: four public Greenhouse pilot feeds, deterministic screening and
+weighted evidence, default Top 5 Markdown/JSON reports, standard-library SQLite
+job state, --mark/--history and handled-job exclusion. Browser scripts are earlier
+experiments; the CSV is a separate manual tracker.
 
-Build **Job Scout v1.0** — the first working AI agent that finds real accounting jobs.
+At the September 25 checkpoint, 34 tests passed (22 original, eight persistence,
+four URL-security). A standard Codex Security scan reported one low-severity
+application-URL/Markdown injection issue; ingestion validation and output
+revalidation/encoding were implemented with focused tests. This is targeted
+remediation evidence, not a later full scan or clearance for the redesign.
 
----
+Recorded isolated live acceptance: four feeds succeeded twice, 3,428 postings,
+nine target roles; marking one job APPLIED changed five recommendations to four,
+while all nine records and its APPLIED state remained. See the Job Scout README
+for historical evidence location/limitations. This does not verify future employer
+suppression, portfolio history or export.
 
-# Current Deliverable
+## Approved milestones
 
-- [ ] Return real Controller and Senior Accountant job listings. (Live Senior Accountant and Accounting Manager candidates now returned; Controller coverage still needs expansion.)
-- [x] Replace fragile Indeed-only scraping with stable career-page sources. (Four Greenhouse employer feeds in the first pilot.)
-- [x] Score job matches automatically. (Transparent keyword evidence; suitability review pending.)
-- [ ] Generate application-ready summaries.
-- [x] Persist application state and exclude handled jobs from fresh Top 5 recommendations. (30 tests pass; live run → APPLIED → rerun verified September 25, 2026.)
-- [ ] Ship Release v1.0.
+- [x] Task 1: reconcile product specifications and standardize permanent close/
+  recovery procedures (documentation only, September 26). Manual checkpoint pending;
+  use Git to determine whether it was subsequently committed/pushed.
+- [ ] Task 2: separately authorize employer-registry/canonical-identity implementation;
+  first review minimal schema/migration design and synthetic legacy-data tests.
+  Do not assume the pilot is the approved final pool.
+- [ ] Research and obtain Adam's approval for initial active target of 10 employers
+  and bench; capture dated evidence, unknowns and selection rationale.
+- [ ] Implement broad accounting/finance discovery, REVIEW NEEDED eligibility and
+  informational scoring without hiding relevant jobs behind Top 5.
+- [ ] Implement separate employer suppression, explicit override and factual
+  application history that survives rejection, closure and reopening.
+- [ ] Implement nullable application portfolio and manual/recruiter opportunities.
+- [ ] Implement private optional .xlsx analysis export with three approved views.
+- [ ] Verify redesigned acceptance and complete authorized Release Close.
 
----
+Task sequence may be refined at each authorized design review without expanding
+the product contract. Registry, schema, lifecycle and export changes must be
+tested before touching real history.
 
-# Foundation Completed ✅
+## Redesigned v1 acceptance gates — all remain open
 
-- [x] Git installed
-- [x] GitHub repository created
-- [x] VS Code workflow established
-- [x] Python 3.14 installed
-- [x] Playwright installed
-- [x] Browser automation verified
-- [x] Repository cleanup (.gitignore)
-- [x] BOOT_CONTEXT created
-- [x] OPERATING_SYSTEM created
-- [x] Workpaper system established
+- [ ] Approved configurable Greenhouse employer population, active target 10 and
+  bench/paused operation; evidence-backed selection and visible source health.
+- [ ] All broadly relevant opportunities surfaced; primary roles recognized;
+  adjacent finance families/ambiguous geography shown REVIEW NEEDED; default junior
+  exclusions and incompatible geography handled as specified. Empty live feeds
+  are reported honestly, not padded or treated as proof of complete coverage.
+- [ ] LA/California-remote/hybrid policy verified; score is transparent
+  accounting-signal coverage, not candidate-fit or hiring probability.
+- [ ] End-to-end run → mark application → rerun excludes the handled job and
+  suppresses its canonical employer while sibling job states remain truthful.
+  Rejection/withdrawal/closure, unresolved/resolved offers, multiple applications,
+  explicit override and reopening preserve history and correct suppression.
+- [ ] Existing SQLite records survive tested migration; separate employer identity
+  does not implicitly merge parents/subsidiaries or similarly named companies.
+- [ ] Portfolio persists factual fields, null unknowns, manual/recruiter opportunities
+  and interview/outcome updates without fabricating applications or career evidence.
+- [ ] Optional workbook has Open Opportunities, Application Portfolio and Employer
+  Pool / Source Health views; SQLite stays authoritative; evidence/unknowns remain
+  truthful; sensitive fields are omitted by default; artifacts are ignored and
+  external text cannot become executable spreadsheet formulas.
+- [ ] Adam reviews the factual discovery/tracking/export handoff as useful for
+  deeper analysis with ChatGPT. No runtime application-writing acceptance required.
+- [ ] Relevant regressions pass, security disposition covers final changes,
+  docs/recovery/workpapers match implementation, and authorized release checkpoint/
+  tag and remote verification complete under Release Close.
 
----
+## Superseded historical criteria
 
-# Skills Unlocked
+Earlier roadmap gaps were live Controller coverage and application-ready summary
+acceptance. The historical live run demonstrated Senior Accountant/Accounting
+Manager roles, not Controller listings. Primary Controller eligibility remains
+part of the new discovery contract; absence of a current live posting is not
+solved by inventing one. Verify rules with fixtures and live results with truthful
+coverage/source-health reporting.
 
-- Git fundamentals
-- GitHub version control
-- VS Code workflow
-- Terminal navigation
-- Python environment setup
-- Playwright browser automation
-- Repository recovery workflow
+Algorithmic Top 5, runtime application-ready summaries, resume bullets and
+recruiter messages are no longer release requirements. They were superseded by
+product-owner approval, not retroactively verified. Current Top 5 code persists
+until replaced. Dated workpapers retain historical context.
 
----
+## Foundation and future projects
 
-# Active Projects
+Existing foundation: Git/GitHub and editor workflow, Python, earlier Playwright
+experiments, security policy, recovery context and workpapers.
 
-## 1. Job Scout (Current)
-
-Purpose:
-Build an AI agent that searches, scores, and organizes accounting jobs.
-
-Current architecture:
-
-- browser.py
-- scraper.py
-- job_scout.py
-- job_tracker.csv
-
-Status: Application-state feature complete; full v1 release remains in progress.
-Current engine: `job_scout.py` + `scraper.py`, with standard-library SQLite state
-in `application_state.py`. `browser.py` is a legacy experiment and the CSV remains
-a separate manual tracker. Private state and generated reports are ignored by Git.
-
-Release verification: all four existing feeds succeeded during the live acceptance
-test; the selected APPLIED job disappeared from the fresh shortlist and remained
-in history. Original 22 tests plus eight state tests pass (30 total). Ready for a
-separate Codex Security release scan; no scan, push, merge or release tag performed.
-Controller coverage and application-ready summary acceptance remain unverified;
-these earlier criteria are not marked complete by the bounded state change.
-
----
-
-## 2. Controller Copilot
-
-Future accounting agent for:
-
-- Month-end close
-- Bank reconciliations
-- Journal entry drafting
-- Variance analysis
-- Audit workpapers
-
----
-
-## 3. Life Admin Agent
-
-Personal automation for:
-
-- Daily planning
-- Bills
-- SDI reminders
-- Administrative tasks
-
----
-
-# Parking Lot
-
-Ideas waiting until current priorities are complete.
-
-- LinkedIn Assistant
-- Revenue Agent
-- Venture Lab
-- Finance Dashboard
-- Disaster Recovery Drill
-
----
-
-# Next Mission
-
-**Release Job Scout v1.0**
-
-Success criteria:
-
-- Stable job source connected.
-- Real accounting jobs returned.
-- Match scores displayed.
-- Clean Builder Mode workflow preserved.
+Controller Copilot (close, reconciliation, journal drafts, variance analysis,
+audit workpapers) and Life Admin remain future projects. Parking lot: LinkedIn
+Assistant, Revenue Agent, Venture Lab, Finance Dashboard, disaster-recovery drill.
+These entries authorize no integration or sensitive-data access.

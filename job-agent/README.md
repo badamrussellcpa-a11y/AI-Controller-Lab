@@ -1,21 +1,14 @@
-# Job Scout — v1 application state verified
+# Job Scout — current operating guide
 
-## Daily close reconciliation - September 25, 2026
+## Current versus planned
 
-This checkpoint supersedes earlier test-count and security-scan status notes below.
-All 34 Job Scout tests pass (22 original, eight persistence, four URL-security
-tests). The standard repository security scan completed and reported one
-low-severity application-URL/Markdown injection finding. The narrow fix validates
-URLs at ingestion and revalidates/encodes them at report output; focused regression
-tests pass. This is targeted remediation evidence, not a subsequent full scan.
-
-The recorded isolated live APPLIED acceptance test passed. Full Job Scout v1
-acceptance remains open: demonstrate live Controller coverage and review whether
-the existing summaries are application-ready. No release tag is declared here.
-The daily checkpoint includes application-state persistence, URL hardening, tests,
-and the Mentor Mode workpaper. Private databases and generated reports remain
-outside Git. Commit/push completion must be verified from Git, not this note.
-
+The current local pilot is operational; **full v1 remains in progress**. The
+[approved product contract](master_prompt.md) plans an approved employer registry,
+broad discovery, employer suppression, factual application portfolio and optional
+private Excel export. None is implemented by the documentation task. Current Top 5
+behavior remains intact; it is no longer the eventual product acceptance target.
+Permanent close/recovery procedures live in
+[OPERATING_SYSTEM.md](../OPERATING_SYSTEM.md), not this operating guide.
 
 Fetches public Greenhouse employer feeds, screens accounting titles, applies the
 weights in `search_rules.md`, and writes a readable shortlist plus a JSON snapshot.
@@ -95,7 +88,9 @@ you subsequently handled. Identity is based on the source ID; an employer repost
 with a new ID is a new record. The separate sample CSV is not imported.
 
 The database contains private application history. It and SQLite sidecars are
-ignored by Git; custom report/history exports should also remain private. Back up
+ignored by Git under the existing .sqlite3 patterns; custom report/history exports
+must also remain private. A custom .db filename or .xlsx outside ignored results/
+is not automatically protected by those patterns; verify exclusions before use. Back up
 the database to an approved local location while Scout is closed. Git alone does
 not back it up. Do not delete it to troubleshoot: that would lose saved exclusions.
 A corrupt or inaccessible database stops the run rather than silently resetting
@@ -137,10 +132,14 @@ temporary databases and never modify your default application history.
 
 ## Verification and release status — September 25, 2026 (Pacific)
 
-Application-state feature complete; ready for the separate Codex Security scan,
-which has not been run. The original 22 tests passed before changes; the expanded
-suite passes 30 tests. A deterministic acceptance test uses separate Python
-processes for run → mark APPLIED → rerun and verifies replenishment to five.
+Historical checkpoint evidence: 34 tests passed (22 original, eight persistence,
+four URL-security). The standard Codex Security scan completed with one low-severity
+application-URL/Markdown injection finding. The targeted fix validates URLs at
+ingestion and revalidates/encodes them at Markdown output; focused tests passed.
+This is not a subsequent full scan or security clearance for planned changes.
+Task 1 on September 26 changed documentation only; it did not rerun this suite or
+live acceptance. A deterministic acceptance test uses separate Python processes
+for run → mark APPLIED → rerun and verifies replenishment to five.
 
 Live acceptance also passed with an isolated test database: four feeds succeeded
 on both runs, returning 3,428 postings and nine target-role records. The first
@@ -154,12 +153,14 @@ The initial sandbox attempt could not access the network; the approved live retr
 succeeded. History display initially exposed a Windows encoding issue, now fixed
 and covered by a regression test; persisted state and filtering were correct.
 
-Do not yet label the entire v1 release complete: the roadmap's live Controller
-coverage remains unverified (this run contained Senior Accountant and Accounting
-Manager roles), and acceptance of application-ready summaries remains open.
-Existing reports contain evidence, salary excerpts and truthful resume-focus
-prompts, but their application readiness was not newly accepted in this task.
-Source expansion and new summary features were outside this bounded change.
+Full v1 remains open under the [redesigned acceptance gates](../ROADMAP.md).
+Historically, live Controller coverage and application-ready summary acceptance
+were unverified; the run contained Senior Accountant and Accounting Manager roles.
+Runtime application-ready summaries/resume bullets/recruiter messages and
+algorithmic Top 5 are now superseded requirements, not retroactively passed tests.
+Primary Controller eligibility remains in the future discovery contract. Existing
+evidence and resume-focus prompts remain current output; deeper candidate analysis
+belongs to Adam + ChatGPT. No release is declared.
 
 `browser.py` and `browser_test.py` remain earlier browser experiments; they are not
 needed for this version. The former heading-only scraper has been replaced.
@@ -175,7 +176,7 @@ not supply travel times to the program and need no mapping subscription. Open a
 link, confirm the actual office, and check expected weekday arrival/departure
 times. With a travel-time range, use the upper bound for conservative planning.
 
-Daily goal: five relevant jobs to review and potentially apply to. Results are
+Current behavior (not the redesigned acceptance target): results are
 capped at five by default, with fewer shown if fewer match. Commute links are
 optional and there is no commute quota or commute-based sorting. Application-state
 tracking now excludes handled jobs; fresh does not guarantee previously unseen.
