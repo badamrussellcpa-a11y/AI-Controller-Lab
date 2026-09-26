@@ -39,8 +39,10 @@ Street, Los Angeles; target at most 45 minutes each way. Keep longer commutes
 available as stretch opportunities rather than rejecting the role outright.
 
 Daily review goal: five relevant jobs. The default shortlist shows up to five
-matching roles, without padding if fewer are available. New/applied tracking is
-still pending, so these are not guaranteed to be five previously unseen jobs.
+matching roles, without padding if fewer are available. Only NEW and SHORTLISTED
+application states qualify; APPLIED, INTERVIEW, REJECTED, OFFER and SKIP are
+excluded before selecting five. Unhandled jobs may reappear, so fresh does not
+guarantee five previously unseen jobs.
 
 Commute is an optional consideration, not a ranking factor or a quota. Review
 routes only when useful; keep focus on job quality and applications.

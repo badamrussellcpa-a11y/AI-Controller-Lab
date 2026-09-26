@@ -1,10 +1,27 @@
 # BOOT_CONTEXT.md
 
+## Daily close reconciliation - September 25, 2026
+
+This checkpoint supersedes earlier test-count and security-scan status notes below.
+All 34 Job Scout tests pass (22 original, eight persistence, four URL-security
+tests). The standard repository security scan completed and reported one
+low-severity application-URL/Markdown injection finding. The narrow fix validates
+URLs at ingestion and revalidates/encodes them at report output; focused regression
+tests pass. This is targeted remediation evidence, not a subsequent full scan.
+
+The recorded isolated live APPLIED acceptance test passed. Full Job Scout v1
+acceptance remains open: demonstrate live Controller coverage and review whether
+the existing summaries are application-ready. No release tag is declared here.
+The daily checkpoint includes application-state persistence, URL hardening, tests,
+and the Mentor Mode workpaper. Private databases and generated reports remain
+outside Git. Commit/push completion must be verified from Git, not this note.
+
+
 # AI Controller Lab — Boot Context
 
 **Current Release:** Job Scout v1.0 (In Progress)
 
-**Last Git Commit:** `41f6ea3`
+**Last Git Commit:** Historical checkpoint `41f6ea3`; use `git log -1` for current HEAD.
 
 **Repository:** AI-Controller-Lab
 
@@ -53,6 +70,7 @@ Build **Job Scout v1.0** — the first working AI agent that returns real Contro
 - browser_test.py
 - scraper.py
 - job_scout.py
+- application_state.py (persistent local SQLite state)
 - job_tracker.csv
 - master_prompt.md
 - search_rules.md
@@ -73,9 +91,12 @@ Build **Job Scout v1.0** — the first working AI agent that returns real Contro
 
 ## In Progress
 
-- Replace fragile Indeed-only extraction.
-- Connect Job Scout to stable career-page sources.
-- Return real accounting jobs with automatic match scoring.
+- Full v1 release acceptance: live Controller coverage and application-ready summaries.
+- Separate Codex Security release scan after the verified application-state change.
+
+Live Greenhouse retrieval, transparent scoring, manual Top 5 reports, and persistent
+application state are implemented. See the latest checkpoint below and the Job
+Scout README for verified behavior and limitations.
 
 ---
 
@@ -117,11 +138,27 @@ If starting a new ChatGPT session:
 - Latest direction: five relevant jobs per daily review is sufficient. Default shortlist capped at five; runs remain manual.
 - Commute is optional context only: no commute quota, commute grouping, or commute-based ranking. Route links remain available.
 - No commute times have been verified. Do not spend more build time on commute verification unless Adam requests it.
-- Next refinement: application/new-posting tracking and useful source coverage, guided by daily use.
+- At this earlier checkpoint, the next refinement was application tracking; see the completed update below.
 - Run instructions and limitations are in `job-agent/README.md`; tests in `test_job_scout.py`.
 - `job_tracker.csv` remains separate and unchanged. Existing sample rows are not live search results.
 - Upgrade decisions live in root `UPGRADE_LEDGER.md`.
 - Earlier status sections above describe the starting state; this checkpoint records subsequent progress.
+
+## Application-state checkpoint — September 25, 2026 (Pacific)
+
+- Added standard-library SQLite storage keyed by source job ID; no new packages or services.
+- Manual `--mark ID STATE` and `--history` commands; only NEW/SHORTLISTED qualify for fresh Top 5.
+- Handled/absent records survive reruns; all fetched target roles are retained with latest details and timestamps.
+- Default database is private and Git-ignored, independent of report output; the sample CSV is untouched.
+- 30 automated tests pass, including separate-process acceptance and failure/encoding cases.
+- Live acceptance: four feeds succeeded twice; 3,428 postings, nine target roles;
+  five recommendations became four after marking one APPLIED in an isolated test store.
+  The job was still in the feed, excluded from recommendations, and preserved APPLIED in history.
+- Evidence and limitations are documented in `job-agent/README.md`.
+- Application-state scope is complete and ready for a separate security scan, not yet security-cleared.
+- Full release is not declared complete: roadmap Controller coverage and application-ready
+  summary acceptance remain unverified. No source expansion or unrelated features added.
+- No push, merge, or release tag performed. Current task requires explicit approval for those actions.
 
 ## Close steps
 

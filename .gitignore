@@ -12,3 +12,9 @@ debug_page.png
 # Generated live job snapshots (rerun Job Scout to refresh)
 job-agent/results/
 job-agent/commute_reviews.json
+
+# Private local application history and SQLite sidecars
+*.sqlite3
+*.sqlite3-journal
+*.sqlite3-wal
+*.sqlite3-shm

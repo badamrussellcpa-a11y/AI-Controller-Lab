@@ -1,4 +1,21 @@
 
+
+## Daily close reconciliation - September 25, 2026
+
+This checkpoint supersedes earlier test-count and security-scan status notes below.
+All 34 Job Scout tests pass (22 original, eight persistence, four URL-security
+tests). The standard repository security scan completed and reported one
+low-severity application-URL/Markdown injection finding. The narrow fix validates
+URLs at ingestion and revalidates/encodes them at report output; focused regression
+tests pass. This is targeted remediation evidence, not a subsequent full scan.
+
+The recorded isolated live APPLIED acceptance test passed. Full Job Scout v1
+acceptance remains open: demonstrate live Controller coverage and review whether
+the existing summaries are application-ready. No release tag is declared here.
+The daily checkpoint includes application-state persistence, URL hardening, tests,
+and the Mentor Mode workpaper. Private databases and generated reports remain
+outside Git. Commit/push completion must be verified from Git, not this note.
+
 # AI Controller Lab Roadmap
 
 **Current Version:** v1.0
@@ -17,6 +34,7 @@ Build **Job Scout v1.0** — the first working AI agent that finds real accounti
 - [x] Replace fragile Indeed-only scraping with stable career-page sources. (Four Greenhouse employer feeds in the first pilot.)
 - [x] Score job matches automatically. (Transparent keyword evidence; suitability review pending.)
 - [ ] Generate application-ready summaries.
+- [x] Persist application state and exclude handled jobs from fresh Top 5 recommendations. (30 tests pass; live run → APPLIED → rerun verified September 25, 2026.)
 - [ ] Ship Release v1.0.
 
 ---
@@ -62,7 +80,17 @@ Current architecture:
 - job_scout.py
 - job_tracker.csv
 
-Status: In Progress
+Status: Application-state feature complete; full v1 release remains in progress.
+Current engine: `job_scout.py` + `scraper.py`, with standard-library SQLite state
+in `application_state.py`. `browser.py` is a legacy experiment and the CSV remains
+a separate manual tracker. Private state and generated reports are ignored by Git.
+
+Release verification: all four existing feeds succeeded during the live acceptance
+test; the selected APPLIED job disappeared from the fresh shortlist and remained
+in history. Original 22 tests plus eight state tests pass (30 total). Ready for a
+separate Codex Security release scan; no scan, push, merge or release tag performed.
+Controller coverage and application-ready summary acceptance remain unverified;
+these earlier criteria are not marked complete by the bounded state change.
 
 ---
 

@@ -3,12 +3,15 @@
 import argparse
 from datetime import datetime, timezone
 import json
+import html
 from pathlib import Path
 import re
 import sys
+import sqlite3
+from application_state import DEFAULT_PATH, FRESH_STATES, STATES, mark_job, read_history, record_jobs
 from urllib.error import URLError
-from urllib.parse import urlencode
-from scraper import fetch_jobs
+from urllib.parse import quote, urlencode
+from scraper import fetch_jobs, validate_application_url
 
 ROOT = Path(__file__).resolve().parent
 BOARDS = {"rocketlab": "Rocket Lab", "spacex": "SpaceX", "figma": "Figma", "reddit": "Reddit"}
@@ -179,7 +182,7 @@ def render_report(run):
              f"Fetched {run['fetched_count']} postings; found {run['target_count']} target-role candidates; showing {len(run['jobs'])}.",
              ""]
     lines += ["Ranked by accounting evidence and role priority; commute checks do not change ranking or eligibility.",
-              "Default: up to five jobs to review. Runs are manual; previously seen or applied jobs can reappear.", ""]
+              "Default: up to five jobs to review. Only NEW and SHORTLISTED jobs are eligible; previously seen unhandled jobs can reappear.", ""]
     lines += ["", "## Source health", ""]
     for source in run["sources"]:
         lines.append(f"- {md(source['board'])}: {md(source['status'])}")
@@ -187,10 +190,15 @@ def render_report(run):
         lines += ["", "No candidates passed this run's filters. This does not mean no matching jobs exist elsewhere."]
     for index, job in enumerate(run["jobs"], 1):
         commute = job.get("commute")
+        # An autolink isolates URL punctuation from Markdown; encode delimiters
+        # and escape entities without decoding or rewriting stored source URLs.
+        application_url = html.escape(quote(validate_application_url(job["url"]),
+                                           safe=":/?#[]@!$&'()*+,;=%-._~"), quote=False)
         lines += ["", f"## {index}. {md(job['title'])} — {md(job['company'])}", "",
                   f"**Evidence score: {job['score']}/100 · {job['review_status']}**", "",
+                  f"Job ID: {md(job['id'])} · Application state: {md(job.get('application_status', 'NEW'))}", "",
                   f"Location: {md(job['location'] or 'Not listed')}. {md(job['location_review'])}.", "",
-                  f"Application: {job['url']}"]
+                  f"Application: <{application_url}>"]
         lines += ["", "**Why it surfaced**"]
         lines += [f"- {md(e['signal'])} (+{e['points']} raw points): {md(e['excerpt'])}" for e in job["evidence"]] or ["- No scoring signals found."]
         lines += ["", "**Pay evidence — employer excerpts; confirm base pay, currency and period**"]
@@ -212,9 +220,28 @@ def main(argv=None):
     parser.add_argument("--all-locations", action="store_true")
     parser.add_argument("--limit", type=int, default=5)
     parser.add_argument("--output", type=Path, default=ROOT / "results")
+    parser.add_argument("--state-file", type=Path, default=DEFAULT_PATH,
+                        help="Persistent local SQLite database; independent of report output")
+    actions = parser.add_mutually_exclusive_group()
+    actions.add_argument("--mark", nargs=2, metavar=("JOB_ID", "STATE"),
+                         help=f"Set a known job's state without fetching feeds: {', '.join(STATES)}")
+    actions.add_argument("--history", action="store_true", help="Print saved records as JSON without fetching feeds")
     args = parser.parse_args(argv)
     if args.limit < 1:
         parser.error("--limit must be positive")
+    try:
+        if args.mark:
+            mark_job(args.state_file, *args.mark)
+            print(f"{args.mark[0]}: {args.mark[1]}")
+            return 0
+        if args.history:
+            # ASCII escapes keep JSON portable through Windows console encodings.
+            print(json.dumps(read_history(args.state_file), indent=2, ensure_ascii=True))
+            return 0
+        record_jobs(args.state_file, [])  # Validate state before fetching any feeds.
+    except (OSError, ValueError, sqlite3.Error) as error:
+        print(f"Application state unavailable; stopped without a fresh shortlist ({error})", file=sys.stderr)
+        return 3
     weights, rejects = load_rules()
     commute_preferences = load_commute_preferences()
     try:
@@ -240,7 +267,15 @@ def main(argv=None):
             result = evaluate(job, weights, rejects)
             if result:
                 candidates.append(result)
-    eligible = [j for j in candidates if args.all_locations or not j["location_review"].startswith("Location outside")]
+    try:
+        statuses = record_jobs(args.state_file, candidates)
+    except (OSError, ValueError, sqlite3.Error) as error:
+        print(f"Application state unavailable; stopped without a fresh shortlist ({error})", file=sys.stderr)
+        return 3
+    for job in candidates:
+        job["application_status"] = statuses[job["id"]]
+    eligible = [j for j in candidates if j["application_status"] in FRESH_STATES
+                and (args.all_locations or not j["location_review"].startswith("Location outside"))]
     selected = select_shortlist(eligible, commute_preferences, commute_reviews, args.limit)
     now = datetime.now(timezone.utc)
     run = {"retrieved_at": now.isoformat(), "fetched_count": fetched, "target_count": len(candidates),
@@ -249,9 +284,9 @@ def main(argv=None):
     stem = args.output / f"shortlist-{now.strftime('%Y%m%d-%H%M%S-%f')}"
     stem.with_suffix(".json").write_text(json.dumps(run, indent=2, ensure_ascii=False), encoding="utf-8")
     stem.with_suffix(".md").write_text(render_report(run), encoding="utf-8")
-    print(f"Fetched {fetched} postings; {len(candidates)} target roles; {len(eligible)} within location filter.")
+    print(f"Fetched {fetched} postings; {len(candidates)} target roles; {len(eligible)} eligible by location and application state.")
     for job in run["jobs"]:
-        print(f"{job['score']:3}/100 | {job['company']} | {job['title']} | {job['location']} | {job['review_status']}")
+        print(f"{job['score']:3}/100 | {job['company']} | {job['title']} | {job['location']} | {job['review_status']} | {job['id']} | {job['application_status']}")
     print(f"Report: {stem.with_suffix('.md')}")
     if not any(s["ok"] for s in sources):
         return 1
