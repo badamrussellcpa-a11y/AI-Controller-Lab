@@ -17,12 +17,14 @@ Git state read-only. Repository evidence takes precedence over conversational me
   broad deterministic role/location classification, complete employer-grouped
   discovery reports with informational accounting-signal coverage,
   private SQLite job state, employer registry/canonical identity, explicit pool
-  placement, schema versioning and source-run observations are implemented. See the
+  placement, schema versioning and source-run observations are implemented. Task 4
+  adds explicit application/event history, derived employer selection controls,
+  reapply review, job-specific overrides and legacy reconciliation. See the
   [current operating guide](job-agent/README.md).
 - **Approved Job Scout redesign: remaining planned functionality.** Researched and
   approved final employer population,
-  separate employer suppression, factual application
-  portfolio, and private Excel export remain to be implemented and accepted.
+  broader strategic application portfolio/manual opportunities and private Excel
+  export remain to be implemented and accepted.
 - **Future/learning projects:** Lumina Wearables training company, Controller
   Copilot (bank reconciliation, month-end close, audit PBC assistance), and Life
   Admin. These entries do not claim implemented production systems or authorize

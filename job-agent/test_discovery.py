@@ -244,7 +244,7 @@ class DiscoveryTests(unittest.TestCase):
         self.assertEqual(len(run["jobs"]), 1)
         with closing(sqlite3.connect(self.db)) as connection:
             self.assertEqual(connection.execute("SELECT relevant_count FROM source_runs WHERE board='test'").fetchone(), (2,))
-            self.assertEqual(connection.execute("PRAGMA user_version").fetchone(), (2,))
+            self.assertEqual(connection.execute("PRAGMA user_version").fetchone(), (3,))
 
     def test_new_heading_and_context_fields_cannot_inject_markdown(self):
         payload = "\n\n# forged\n![tracker](https://example.org/x)<script>x</script>\\\\"

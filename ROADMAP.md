@@ -1,6 +1,6 @@
 # AI Controller Lab Roadmap
 
-**Job Scout v1: in progress; Task 3 discovery/output implemented, later features planned.**
+**Job Scout v1: in progress; Task 4 lifecycle/employer controls implemented; release remains open.**
 The [product contract](job-agent/master_prompt.md) owns detailed requirements.
 [OPERATING_SYSTEM.md](OPERATING_SYSTEM.md) owns Daily Close and Release Close.
 
@@ -13,11 +13,21 @@ remain visible with truthful states and are excluded from the unhandled-job IDs.
 Browser scripts are earlier
 experiments; the CSV is a separate manual tracker.
 
+Task 4 adds explicit application records, append-only events, UNKNOWN/NO/YES
+engagement, active employer suppression in selection_job_ids, reapply review after
+unsuccessful engaged/unknown processes, job/context-specific overrides and explicit
+review resolution. Complete discovery and sibling states remain truthful. Schema
+v3 migration preserves old values and copies legacy application labels without
+inventing applications/events; unresolved legacy history gates selection until
+explicit reconciliation. The operating guide owns exact command semantics.
+Task 4 tests use only temporary synthetic data; see BOOT_CONTEXT for final counts.
+No real migration, live acceptance, external actions or release security clearance.
+
 Task 3 recognizes primary title variants and senior/management adjacent families
 as CLEAR MATCH or REVIEW NEEDED, with explicit reasons. Unknown geography remains
 reviewable; clearly outside-area roles stay in history and are available through
 --all-locations. --limit is retired with a visible error. Failed/unsearched ACTIVE
-sources make source coverage incomplete. No employer suppression is implemented.
+sources make source coverage incomplete. Task 4 adds separate selection suppression.
 81 tests passed: 20 new discovery tests plus 61 retained/adapted regressions,
 including all 27 registry/migration tests and four URL-security tests. Seven
 zero-coverage fixture roles at one employer all appear. No live acceptance,
@@ -57,9 +67,11 @@ suppression, portfolio history or export.
   and bench; capture dated evidence, unknowns and selection rationale.
 - [x] Task 3: broad accounting/finance discovery, review-needed eligibility,
   informational coverage and untruncated employer-grouped output; fixture verified.
-  Manual checkpoint pending; verify subsequent commit/push from Git.
-- [ ] Implement separate employer suppression, explicit override and factual
-  application history that survives rejection, closure and reopening.
+  Local checkpoint 574d7e2 verified at Task 4 opening; remote was not queried.
+- [x] Task 4: separate employer suppression, explicit opportunity override, legacy
+  reconciliation and factual application/event history; synthetic acceptance verified.
+  New actual applications create new records; prior closed records remain immutable.
+  Task 4 manual checkpoint pending; no commit/push/tag performed by the agent.
 - [ ] Implement nullable application portfolio and manual/recruiter opportunities.
 - [ ] Implement private optional .xlsx analysis export with three approved views.
 - [ ] Verify redesigned acceptance and complete authorized Release Close.
@@ -81,15 +93,14 @@ tested before touching real history.
 - [ ] LA/California-remote/hybrid policy verified; score is transparent
   accounting-signal coverage, not candidate-fit or hiring probability.
   Fixture cases pass in Task 3; live eligibility still requires human review.
-- [ ] Future application-selection view excludes the handled job and suppresses
-  its canonical employer after run → mark application → rerun, while sibling
-  job states remain truthful. Task 3 complete discovery keeps handled jobs visible;
-  the current unhandled-job IDs exclude them without employer suppression.
-  Rejection/withdrawal/closure, unresolved/resolved offers, multiple applications,
-  explicit override and reopening preserve history and correct suppression.
+- [ ] Final user acceptance of selection after run → explicitly record application
+  → rerun, with truthful visible sibling states. Task 4 verifies this on synthetic
+  fixtures, plus rejection/withdrawal/closure, unresolved offers, multiple applications,
+  overrides and reapply review. Complete discovery remains intact. No accepted/
+  declined/expired outcomes are inferred; CLOSED is an explicit ended relationship.
 - [ ] Existing private SQLite records survive separately authorized migration.
   Synthetic preservation/rollback and explicit canonical identity are verified in
-  Task 2; private backup/restoration planning and real migration remain outstanding.
+  Tasks 2/4; private backup/restoration planning and real migration remain outstanding.
 - [ ] Portfolio persists factual fields, null unknowns, manual/recruiter opportunities
   and interview/outcome updates without fabricating applications or career evidence.
 - [ ] Optional workbook has Open Opportunities, Application Portfolio and Employer

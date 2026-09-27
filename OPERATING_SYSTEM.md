@@ -22,6 +22,25 @@ Keep the Builder Mode interrupt budget: at most one unsolicited improvement
 every 30–60 minutes. Otherwise fix blockers, answer the current question and
 continue the scoped work; material security/data-integrity risks still surface.
 
+## Product Owner / AI development gate
+
+Material product/domain assumptions must be surfaced in plain English and approved
+by the Product Owner before they become implemented behavior. AI may exercise
+normal engineering discretion over immaterial implementation details; it must not
+silently convert material business/domain assumptions into requirements.
+
+Problem/outcome → AI planning proposal → material assumptions/risks surfaced →
+plain-English Product Owner review → explicit approval → bounded implementation →
+tests/acceptance evidence → verified checkpoint.
+
+## Automation traceability principle
+
+For material automated outputs or restrictions, make it possible to trace:
+trigger → source/input → transformation/business rule → resulting state/output →
+exception/override behavior → evidence/audit trail.
+Successful execution alone is not proof that an automated result is correct.
+Unknown is neither No nor Yes; it remains unknown until explicitly reconciled.
+
 ## Daily Close — mandatory order
 
 “Daily Close” means this complete sequence. A stop before the authorized Git

@@ -9,6 +9,8 @@ import re
 import sys
 import sqlite3
 from application_state import DEFAULT_PATH, FRESH_STATES, STATES, mark_job, read_history, record_jobs, migrate_database
+from application_lifecycle import (record_application, record_event, read_applications,
+                                   employer_relationships, consideration, decide)
 from employer_registry import DEFAULT_REGISTRY, load_registry, select_sources
 from urllib.error import URLError
 from urllib.parse import quote, urlencode
@@ -284,7 +286,12 @@ def render_report(run):
              f"Outside-area roles omitted from this view: {run.get('excluded_location_count', 0)}; retained in history. Use --all-locations to inspect them.",
              "Discovery includes handled states. Only NEW/SHORTLISTED are unhandled by job state; this is not an application recommendation.",
              f"Unhandled displayed jobs within the broad location policy: {len(run.get('fresh_job_ids', []))}.",
-             "Employer application suppression is not implemented.", "", "## Source health", ""]
+             "Employer controls apply to the separate selection view; complete discovery remains visible.",
+             "", "## Application selection", "",
+             "Eligible for human consideration under current job/location/employer controls; not a submitted application or verified fit.",
+             f"Jobs available for consideration: {len(run.get('selection_job_ids', []))}.",
+             *[f"- {md(job_id)}" for job_id in run.get("selection_job_ids", [])],
+             "", "## Source health", ""]
     if "active_employer_count" in run:
         lines.append(f"Configured ACTIVE employers: {run['active_employer_count']} (fewer than ten is valid; PILOT does not mean final approved selection).")
     lines.append(f"Selected source boards: {selected_count} of {active_count} ACTIVE boards.")
@@ -303,6 +310,11 @@ def render_report(run):
                   f"Employer ID: {md(employer_id)}"]
         if "approval_status" in employer:
             lines.append(f"Registry status: {md(employer['approval_status'])}")
+        relationship = employer.get("relationship")
+        if relationship:
+            lines += [f"**{md(relationship['status'])}**", md(relationship["reason"])]
+            if any(r["kind"] == "ACTIVE APPLICATION" for r in relationship["restrictions"]):
+                lines.append("**ACTIVE APPLICATION AT THIS EMPLOYER — REVIEW BEFORE SECOND APPLICATION**")
         if not jobs:
             lines += ["", "No displayed roles from this employer's successful sources under this view's rules; check source health for missing data."]
         for job in jobs:
@@ -315,8 +327,9 @@ def render_report(run):
                           if status in FRESH_STATES else "Handled state — not a fresh application recommendation.")
             lines += ["", f"### {md(job['title'])}", "",
                       f"**{md(job['review_status'])}** — {md(job['classification_reason'])}", "",
-                      f"Job ID: {md(job['id'])} · Application state: {md(status)}",
+                      f"Job ID: {md(job['id'])} · Job state: {md(status)}",
                       state_note,
+                      md(job.get("selection_reason", "Inspect current employer relationship before application selection.")),
                       f"Location: {md(job['location'] or 'Not listed')}. {md(job['location_review'])}.", "",
                       f"Application: <{application_url}>", "",
                       f"Accounting-signal coverage: {job['accounting_signal_coverage']}/100 (informational).",
@@ -344,21 +357,74 @@ def main(argv=None):
                         help="Persistent local SQLite database; independent of report output")
     actions = parser.add_mutually_exclusive_group()
     actions.add_argument("--mark", nargs=2, metavar=("JOB_ID", "STATE"),
-                         help=f"Set a known job's state without fetching feeds: {', '.join(STATES)}")
+                         help=f"Job label only, NOT an application record: {', '.join(STATES)}. Lifecycle labels require reconciliation.")
+    actions.add_argument("--record-application", metavar="JOB_ID", help="Record an actual submitted application; never submits one")
+    actions.add_argument("--application-event", nargs=2, metavar=("APPLICATION_ID", "EVENT"))
+    actions.add_argument("--applications", action="store_true", help="Inspect explicit application and decision history as JSON")
+    actions.add_argument("--employer-status", metavar="EMPLOYER_ID")
+    actions.add_argument("--authorize-opportunity", nargs=2, metavar=("EMPLOYER_ID", "JOB_ID"))
+    actions.add_argument("--resolve-reapply-review", metavar="EMPLOYER_ID")
+    actions.add_argument("--reconcile-legacy", nargs=2, metavar=("EMPLOYER_ID", "JOB_ID"))
+    parser.add_argument("--reason", help="Required human reason for closure, override or reconciliation; stored privately")
+    parser.add_argument("--occurred-at", help="Known date or timezone-aware ISO timestamp; omitted means UNKNOWN")
+    parser.add_argument("--engagement", choices=("UNKNOWN", "NO", "YES"), default=None)
+    parser.add_argument("--disposition", choices=("ELIGIBLE", "REVIEW", "LINKED"))
+    parser.add_argument("--application-id", type=int, help="Existing explicit application for LINKED reconciliation")
     actions.add_argument("--history", action="store_true", help="Print saved records as JSON without fetching feeds")
     actions.add_argument("--migrate-state", action="store_true",
                          help="Explicit schema migration only; requires approved private backup/restoration plan")
     args = parser.parse_args(argv)
     if args.limit is not None:
         parser.error("--limit is retired. Remove it: discovery now includes all eligible opportunities.")
+    if args.reason is not None and not (args.application_event or args.authorize_opportunity or args.resolve_reapply_review or args.reconcile_legacy):
+        parser.error("--reason requires an event or explicit employer decision")
+    if args.occurred_at is not None and not (args.record_application or args.application_event):
+        parser.error("--occurred-at requires an application or event")
+    if args.engagement is not None and not args.application_event:
+        parser.error("--engagement requires --application-event")
+    if (args.disposition is not None or args.application_id is not None) and not args.reconcile_legacy:
+        parser.error("Reconciliation options require --reconcile-legacy")
     try:
+        result = None
+        if args.record_application:
+            result = {"application_id": record_application(args.state_file, args.record_application, args.occurred_at),
+                      "message": "Recorded your application fact locally; no application submitted by Scout."}
+        elif args.application_event:
+            app_id, event = args.application_event
+            record_event(args.state_file, int(app_id), event, args.engagement or "UNKNOWN", args.occurred_at, args.reason)
+            result = {"application_id": int(app_id), "event": event, "message": "Event appended; prior history retained."}
+        elif args.applications:
+            result = read_applications(args.state_file)
+        elif args.employer_status:
+            result = employer_relationships(args.state_file).get(args.employer_status)
+            if result is None:
+                raise ValueError("Unknown canonical employer ID")
+        elif args.authorize_opportunity:
+            employer_id, job_id = args.authorize_opportunity
+            result = {"decision_id": decide(args.state_file, employer_id, "OVERRIDE", args.reason, job_id),
+                      "employer_id": employer_id, "job_id": job_id,
+                      "message": "Authorized consideration of this opportunity under the recorded restriction context only; no application submitted."}
+        elif args.resolve_reapply_review:
+            result = {"decision_id": decide(args.state_file, args.resolve_reapply_review, "REVIEW_CLEARED", args.reason),
+                      "message": "Current reapply review resolved; other active/legacy restrictions remain effective."}
+        elif args.reconcile_legacy:
+            if args.disposition is None:
+                raise ValueError("Legacy reconciliation requires --disposition ELIGIBLE, REVIEW or LINKED")
+            employer_id, job_id = args.reconcile_legacy
+            result = {"decision_id": decide(args.state_file, employer_id, "LEGACY_" + args.disposition,
+                                           args.reason, job_id, args.application_id),
+                      "message": "Explicit current relationship decision recorded; legacy facts/history unchanged."}
+        if result is not None:
+            print(json.dumps(result, indent=2, ensure_ascii=True))
+            return 0
         if args.migrate_state:
             migrate_database(args.state_file, load_registry(args.registry))
-            print("Application-state schema is version 2; no feeds fetched.")
+            print("Application-state schema is version 3; legacy labels preserved, no application history inferred; no feeds fetched.")
             return 0
         if args.mark:
             mark_job(args.state_file, *args.mark)
-            print(f"{args.mark[0]}: {args.mark[1]}")
+            print(json.dumps({"job_id": args.mark[0], "state": args.mark[1],
+                              "message": "Job label only; no application recorded. Legacy application labels require explicit reconciliation."}))
             return 0
         if args.history:
             # ASCII escapes keep JSON portable through Windows console encodings.
@@ -414,18 +480,29 @@ def main(argv=None):
                              "error_kind": None})
     try:
         statuses = record_jobs(args.state_file, candidates, registry, observations)
+        relationships = employer_relationships(args.state_file)
     except (OSError, ValueError, sqlite3.Error) as error:
         print(f"Application state unavailable; stopped without a discovery report ({error})", file=sys.stderr)
         return 3
     for job in candidates:
         job["application_status"] = statuses[job["id"]]
+        allowed, reason = consideration(relationships[job["employer_id"]], job["id"])
+        job["selection_eligible"] = (allowed and statuses[job["id"]] in FRESH_STATES
+                                     and job["location_classification"] != "INCOMPATIBLE")
+        job["selection_reason"] = reason
+        if statuses[job["id"]] not in FRESH_STATES:
+            job["selection_reason"] += "; handled job state excludes this job from fresh selection"
+        if job["location_classification"] == "INCOMPATIBLE":
+            job["selection_reason"] += "; incompatible location excludes this job from fresh selection"
     eligible = [j for j in candidates
                 if args.all_locations or j["location_classification"] != "INCOMPATIBLE"]
     selected = select_discovery(eligible, commute_preferences, commute_reviews)
     fresh_ids = [j["id"] for j in selected if j["application_status"] in FRESH_STATES
                  and j["location_classification"] != "INCOMPATIBLE"]
     employers = {e["employer_id"]: {"employer_id": e["employer_id"], "company": e["display_name"],
-                                   "approval_status": e["approval_status"]}
+                                   "approval_status": e["approval_status"],
+                                   "relationship": {k: relationships[e["employer_id"]][k]
+                                                    for k in ("status", "reason", "restrictions", "overrides")}}
                  for e in selected_sources.values()}
     active_sources = select_sources(registry)
     now = datetime.now(timezone.utc)
@@ -433,6 +510,8 @@ def main(argv=None):
            "sources": sources, "jobs": selected, "commute_preferences": commute_preferences,
            "report_type": "complete-discovery", "discovery_policy": "accounting-finance-v3",
            "fresh_job_ids": fresh_ids, "excluded_location_count": len(candidates) - len(selected),
+           "selection_job_ids": [j["id"] for j in selected if j["selection_eligible"]],
+           "application_policy": "lifecycle-v4",
            "coverage_complete": len(selected_sources) == len(active_sources) and all(s["ok"] for s in sources),
            "employers": sorted(employers.values(), key=lambda e: (e["company"].casefold(), e["employer_id"])),
            "active_source_count": len(active_sources),

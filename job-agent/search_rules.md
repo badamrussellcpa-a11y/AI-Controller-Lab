@@ -95,8 +95,17 @@ shows them for inspection without treating them as fresh/actionable.
 This is a conservative label parser, not geocoding or verified residency eligibility.
 No commute time is inferred.
 
+## Employer application controls — Task 4
+
+Complete discovery and fresh_job_ids retain their Task 3 meanings. The separate
+selection_job_ids list also requires an eligible employer relationship or a valid
+job-specific override. Active applications and unresolved reapply review suppress
+selection without changing sibling job states or hiding discovery. Legacy
+application labels with unknown history require explicit reconciliation first.
+Application facts, review/override decisions and evidence live in the private
+SQLite lifecycle tables, not this rules file. See README for the lifecycle policy.
+
 ## Still planned
 
-Employer suppression is separate from truthful job states; applying to one job
-does not mark sibling jobs APPLIED. Researched final employer selection, application
-portfolio, manual opportunities and Excel export remain planned.
+Researched final employer selection, broader strategic portfolio analytics,
+manual opportunities, employer replacement and Excel export remain planned.

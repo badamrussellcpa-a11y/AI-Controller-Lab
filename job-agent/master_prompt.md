@@ -3,8 +3,9 @@
 **Approved direction, September 26, 2026. Not a claim of implemented functionality.**
 Task 2 implements the registry, canonical identity, explicit pool placement,
 schema/migration and observed-source foundation described below. Task 3 implements
-broader deterministic discovery and employer-grouped output. Employer suppression,
-portfolio and export remain planned.
+broader deterministic discovery and employer-grouped output. Task 4 implements
+explicit application lifecycle/history and employer selection restrictions.
+Broader strategic portfolio/manual opportunities and export remain planned.
 The current machine is documented in [README.md](README.md); milestones and
 acceptance are in [ROADMAP.md](../ROADMAP.md). Follow
 [SECURITY.md](../SECURITY.md) and [OPERATING_SYSTEM.md](../OPERATING_SYSTEM.md).
@@ -72,25 +73,44 @@ the broad location policy; it means unhandled state, not verified actionability 
 candidate fit. Absent jobs remain in history, not falsely presented as current.
 Task 3 changes no database schema or migration behavior.
 
-## Job state and separate employer state — planned extension
+## Job state and separate employer relationship — Task 4 implemented
 
 Existing job states remain NEW, SHORTLISTED, APPLIED, INTERVIEW, REJECTED, OFFER,
 SKIP. Task 2 implements explicit canonical employer identity and source mappings;
 it never automatically merges parents, subsidiaries or similar names.
-The suppression/application-lifecycle behavior below remains planned.
+Application records/events are authoritative for lifecycle facts; discovery labels
+alone never create applications. Explicit commands record facts, never submit them.
 
 Applying to Company A's Controller job leaves its Accounting Manager and Senior
 Accountant jobs NEW. Separately suppress the employer from the normal selection
 queue while an application is active, unless explicitly overridden. APPLIED, INTERVIEW and an
-unresolved OFFER count as active. Rejection, withdrawal or closure ends suppression
-only when no other active application remains. Provide an explicit override.
-Reopening a job never deletes historical application evidence.
+unresolved OFFER count as active. Rejection with explicitly confirmed NO meaningful
+engagement releases the employer only when no other restriction remains. Recruiter/
+HR screens and interviews record engagement independently of outcome. An unsuccessful
+engaged process requires REVIEW BEFORE REAPPLYING; unknown engagement also requires
+human review, never an assumption of no engagement. Review may be explicitly cleared
+with a reason, preserving evidence. There is no cooling-off timer.
 
-Withdrawal/closure and offer resolution need an explicit future application
-lifecycle representation; they are not additional supported CLI states today.
-The existing latest-state register is not a full application event history.
-Task 2's explicit v1-to-v2 migration preserves existing IDs, states, snapshots and
-timestamps and is tested on synthetic databases only. Any future real-data
+WITHDRAWN and CLOSED mean the user explicitly records that the relationship ended;
+neither invents accepted/declined/expired outcomes. Closure after engagement requires
+review. Multiple actual applications may be recorded truthfully; one closure cannot
+clear another active application.
+
+Overrides authorize one saved job and its current restriction context, with reason
+and timestamp. They persist without a timer; new applications, closure/review facts
+or changed opportunity content require new authorization. They never create
+applications, change sibling states or erase history. Complete discovery remains
+visible with warnings. selection_job_ids is the separate controlled selection view;
+fresh_job_ids remains the Task 3 unhandled-state list and is not that queue.
+
+Schema v3 adds explicit applications, append-only lifecycle events, preserved legacy
+labels and human decisions. Migration from v1/v2 preserves all prior values and
+creates no inferred applications, dates or engagement. Legacy APPLIED/INTERVIEW/
+OFFER/REJECTED labels without sufficient history require explicit reconciliation;
+ordinary --mark cannot bypass this gate. Unknown remains unknown. Current eligibility
+or review can be explicitly decided, or an independently recorded application linked.
+Application-backed jobs use lifecycle commands rather than --mark. See the operating
+guide for commands and narrow semantics. Any future real-data
 migration requires an approved private backup, restoration plan/test as appropriate,
 and explicit Adam authorization. Ordinary commands do not auto-migrate legacy data.
 

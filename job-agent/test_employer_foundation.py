@@ -161,7 +161,7 @@ class FoundationTests(unittest.TestCase):
 
     def test_fresh_schema_and_foreign_keys(self):
         state.record_jobs(self.db, [fixture()], self.registry)
-        self.assertEqual(self.query("PRAGMA user_version"), [(2,)])
+        self.assertEqual(self.query("PRAGMA user_version"), [(3,)])
         self.assertEqual(self.query("PRAGMA foreign_key_check"), [])
         with closing(state.connect(self.db)) as connection:
             self.assertEqual(connection.execute("PRAGMA foreign_keys").fetchone(), (1,))
@@ -173,11 +173,11 @@ class FoundationTests(unittest.TestCase):
         state.migrate_database(self.db, self.registry)
         after = self.query("SELECT id, status, job_json, first_seen, last_seen, status_updated_at FROM jobs")
         self.assertEqual(after, before)
-        self.assertEqual(self.query("PRAGMA user_version"), [(2,)])
+        self.assertEqual(self.query("PRAGMA user_version"), [(3,)])
         self.assertEqual({r["employer_id"] for r in state.read_history(self.db)}, {"fixture-test"})
         self.assertEqual(self.query("SELECT * FROM source_runs"), [])  # No invented observations.
         self.assertEqual({row[0] for row in self.query("SELECT name FROM sqlite_master WHERE type='table'")},
-                         {"jobs", "employers", "employer_sources", "source_runs"})
+                         set(state.SCHEMA))
 
     def test_explicit_version_one_supported_and_migration_is_idempotent(self):
         self.legacy(version=1)

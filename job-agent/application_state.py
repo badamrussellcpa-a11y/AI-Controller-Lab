@@ -10,7 +10,7 @@ from employer_registry import load_registry, source_map
 STATES = ("NEW", "SHORTLISTED", "APPLIED", "INTERVIEW", "REJECTED", "OFFER", "SKIP")
 FRESH_STATES = {"NEW", "SHORTLISTED"}
 DEFAULT_PATH = Path(__file__).resolve().parent / "application_state.sqlite3"
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 # The original unversioned layout is logical v1 (user_version 0 or 1).
 LEGACY_SQL = """CREATE TABLE jobs (
     id TEXT PRIMARY KEY,
@@ -63,6 +63,58 @@ SCHEMA = {
                 AND error_kind IS NOT NULL))
     )"""
 }
+
+
+V2_SCHEMA = dict(SCHEMA)
+LIFECYCLE_SCHEMA = {
+    "applications": """CREATE TABLE applications (
+        application_id INTEGER PRIMARY KEY,
+        employer_id TEXT NOT NULL REFERENCES employers(employer_id),
+        job_id TEXT NOT NULL REFERENCES jobs(id),
+        title TEXT NOT NULL,
+        submitted_at TEXT,
+        recorded_at TEXT NOT NULL,
+        provenance TEXT NOT NULL CHECK (provenance = 'EXPLICIT_USER')
+    )""",
+    "application_events": """CREATE TABLE application_events (
+        event_id INTEGER PRIMARY KEY,
+        application_id INTEGER NOT NULL REFERENCES applications(application_id),
+        event TEXT NOT NULL CHECK (event IN
+            ('APPLIED', 'SCREEN', 'INTERVIEW', 'OFFER', 'REJECTED', 'WITHDRAWN', 'CLOSED')),
+        engagement TEXT NOT NULL CHECK (engagement IN ('UNKNOWN', 'NO', 'YES')),
+        occurred_at TEXT,
+        recorded_at TEXT NOT NULL,
+        reason TEXT
+    )""",
+    "legacy_application_facts": """CREATE TABLE legacy_application_facts (
+        fact_id INTEGER PRIMARY KEY,
+        job_id TEXT NOT NULL REFERENCES jobs(id),
+        status TEXT NOT NULL CHECK (status IN ('APPLIED', 'INTERVIEW', 'OFFER', 'REJECTED')),
+        status_updated_at TEXT NOT NULL,
+        recorded_at TEXT NOT NULL
+    )""",
+    "employer_decisions": """CREATE TABLE employer_decisions (
+        decision_id INTEGER PRIMARY KEY,
+        employer_id TEXT NOT NULL REFERENCES employers(employer_id),
+        job_id TEXT REFERENCES jobs(id),
+        application_id INTEGER REFERENCES applications(application_id),
+        action TEXT NOT NULL CHECK (action IN
+            ('OVERRIDE', 'REVIEW_CLEARED', 'LEGACY_ELIGIBLE', 'LEGACY_REVIEW', 'LEGACY_LINKED')),
+        context TEXT NOT NULL,
+        reason TEXT NOT NULL,
+        recorded_at TEXT NOT NULL
+    )""",
+}
+SCHEMA.update(LIFECYCLE_SCHEMA)
+
+
+def _capture_legacy(connection):
+    # These are copies of factual labels, not inferred application events/dates.
+    connection.execute("""INSERT INTO legacy_application_facts
+        (job_id, status, status_updated_at, recorded_at)
+        SELECT id, status, status_updated_at, ? FROM jobs
+        WHERE status IN ('APPLIED', 'INTERVIEW', 'OFFER', 'REJECTED')""",
+        (datetime.now(timezone.utc).isoformat(),))
 
 
 def _normalized(sql):
@@ -153,13 +205,22 @@ def connect(path, *, migration_registry=None):
         if version == 0 and not objects:
             for sql in SCHEMA.values():
                 connection.execute(sql)
-            connection.execute("PRAGMA user_version=2")
+            connection.execute("PRAGMA user_version=3")
         elif version in (0, 1):
             _check_schema(connection, {"jobs": LEGACY_SQL})
             if migration_registry is None:
                 raise ValueError("Legacy v1 database requires explicit migration after approved backup/restoration planning")
             _migrate(connection, migration_registry)
-            connection.execute("PRAGMA user_version=2")
+            _capture_legacy(connection)
+            connection.execute("PRAGMA user_version=3")
+        elif version == 2:
+            _check_schema(connection, V2_SCHEMA)
+            if migration_registry is None:
+                raise ValueError("Legacy v2 database requires explicit migration after approved backup/restoration planning")
+            for sql in LIFECYCLE_SCHEMA.values():
+                connection.execute(sql)
+            _capture_legacy(connection)
+            connection.execute("PRAGMA user_version=3")
         elif version != SCHEMA_VERSION:
             raise ValueError("Unsupported application-state schema version")
         _check_schema(connection, SCHEMA)
@@ -214,11 +275,19 @@ def mark_job(path, job_id, status):
     if status not in STATES:
         raise ValueError(f"Status must be one of: {', '.join(STATES)}")
     with closing(connect(path)) as connection, connection:
+        connection.execute("BEGIN IMMEDIATE")
+        if connection.execute("SELECT 1 FROM applications WHERE job_id=?", (job_id,)).fetchone():
+            raise ValueError("Job has explicit application history; use application lifecycle commands instead of --mark")
+        now = datetime.now(timezone.utc).isoformat()
         cursor = connection.execute(
             "UPDATE jobs SET status=?, status_updated_at=? WHERE id=?",
-            (status, datetime.now(timezone.utc).isoformat(), job_id))
+            (status, now, job_id))
         if cursor.rowcount != 1:
             raise ValueError("Unknown job ID; run Scout and use an ID from its report or --history")
+        if status in {"APPLIED", "INTERVIEW", "OFFER", "REJECTED"}:
+            connection.execute("""INSERT INTO legacy_application_facts
+                (job_id, status, status_updated_at, recorded_at) VALUES (?, ?, ?, ?)""",
+                (job_id, status, now, now))
 
 
 def read_history(path):
