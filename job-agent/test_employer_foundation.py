@@ -290,7 +290,8 @@ class FoundationTests(unittest.TestCase):
         self.assertEqual(self.run_scout([fixture(id=f"test:{n}") for n in range(7)],
                                        ("--boards", "test")), 0)
         run = json.loads(next((self.folder / "reports").glob("*.json")).read_text(encoding="utf-8"))
-        self.assertEqual([j["id"] for j in run["jobs"]], ["test:0", "test:1"])
+        self.assertEqual(run["fresh_job_ids"], ["test:0", "test:1"])
+        self.assertEqual(len(run["jobs"]), 7)
         state.mark_job(self.db, "test:0", "APPLIED")
         self.assertEqual(len(state.read_history(self.db)), 7)
         self.assertEqual(state.read_history(self.db)[0]["status"], "APPLIED")
@@ -333,7 +334,7 @@ class FoundationTests(unittest.TestCase):
                 fetch.assert_not_called()
             self.assertFalse(self.db.exists())
 
-    def test_pilot_default_run_preserves_all_four_feeds_and_top_five(self):
+    def test_pilot_default_run_preserves_all_four_feeds_and_all_jobs(self):
         calls = []
         def fetch(board, company):
             calls.append((board, company))
@@ -344,7 +345,7 @@ class FoundationTests(unittest.TestCase):
         self.assertEqual(calls, [("rocketlab", "Rocket Lab"), ("spacex", "SpaceX"),
                                  ("figma", "Figma"), ("reddit", "Reddit")])
         run = json.loads(next((self.folder / "reports").glob("*.json")).read_text(encoding="utf-8"))
-        self.assertEqual(len(run["jobs"]), 5)
+        self.assertEqual(len(run["jobs"]), 8)
         self.assertEqual(run["active_employer_count"], 4)
         self.assertEqual(len(state.read_history(self.db)), 8)
 

@@ -11,7 +11,7 @@ from unittest.mock import patch
 from job_scout import evaluate, load_rules, location_status, main as scout_main, role_for, salary_evidence
 from application_state import STATES, FRESH_STATES, mark_job, read_history, record_jobs
 from scraper import fetch_jobs, plain_text, validate_application_url
-from job_scout import assess_commute, render_report, select_shortlist
+from job_scout import assess_commute, render_report, select_discovery
 from urllib.parse import parse_qs, urlparse
 
 
@@ -61,7 +61,7 @@ class ScoutTests(unittest.TestCase):
 
     def test_score_counts_signal_once(self):
         result = evaluate(fixture(description="month-end close month-end close"), self.weights, self.rejects)
-        self.assertEqual(result["score"], round(100*10/sum(self.weights.values())))
+        self.assertEqual(result["accounting_signal_coverage"], round(100*10/sum(self.weights.values())))
 
     def test_missing_salary_is_unknown(self):
         self.assertEqual(evaluate(fixture(), self.weights, self.rejects)["salary_excerpts"], [])
@@ -69,25 +69,25 @@ class ScoutTests(unittest.TestCase):
     def test_pay_range_is_not_duplicated(self):
         self.assertEqual(len(salary_evidence("Base salary $100,000 - $120,000 per year.")), 1)
 
-    def test_finance_manager_requires_leadership_and_accounting(self):
-        self.assertIsNone(evaluate(fixture(title="Finance Manager"), self.weights, self.rejects))
+    def test_finance_manager_requires_accounting_or_finance_scope(self):
+        self.assertIsNone(evaluate(fixture(title="Finance Manager", description="Sell cars and loans."), self.weights, self.rejects))
         self.assertIsNotNone(evaluate(fixture(title="Finance Manager", description="Lead a team and own financial reporting."), self.weights, self.rejects))
 
     def test_topic_mention_review(self):
         result = evaluate(fixture(description="Month-end close. No mortgage experience required."), self.weights, self.rejects)
-        self.assertEqual(result["review_status"], "REVIEW")
+        self.assertEqual(result["review_status"], "REVIEW NEEDED")
 
     def test_rejected_title(self):
         self.assertIsNone(evaluate(fixture(title="Controller - Auto Finance"), self.weights, self.rejects))
 
     def test_remote_not_eligibility_promise(self):
-        self.assertIn("verify California", location_status("Remote - UK"))
+        self.assertIn("outside-area", location_status("Remote - UK"))
 
     def test_partial_failure_and_duplicates(self):
         with tempfile.TemporaryDirectory() as folder:
             with patch("job_scout.fetch_jobs", side_effect=[[fixture(id="good:1"), fixture(id="good:1")], OSError("offline")]):
                 self.assertEqual(main(["--boards", "good", "bad", "--output", folder]), 2)
-            report = json.loads(next(Path(folder).glob("shortlist-*.json")).read_text(encoding="utf-8"))
+            report = json.loads(next(Path(folder).glob("discovery-*.json")).read_text(encoding="utf-8"))
             self.assertEqual(len(report["jobs"]), 1)
             self.assertEqual(len(report["sources"]), 2)
 
@@ -100,7 +100,7 @@ class ScoutTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             with patch("job_scout.fetch_jobs", return_value=[fixture(location="Austin, TX")]):
                 self.assertEqual(main(["--boards", "test", "--output", folder]), 0)
-            report = json.loads(next(Path(folder).glob("shortlist-*.json")).read_text(encoding="utf-8"))
+            report = json.loads(next(Path(folder).glob("discovery-*.json")).read_text(encoding="utf-8"))
             self.assertEqual(report["jobs"], [])
 
 
@@ -166,7 +166,7 @@ class ApplicationUrlTests(unittest.TestCase):
             with patch("sys.stderr", new_callable=io.StringIO) as errors:
                 self.assertEqual(main(["--boards", "bad", "good", "--output", folder]), 2)
                 self.assertNotIn("injected-secret", errors.getvalue())
-            report = json.loads(next(Path(folder).glob("shortlist-*.json")).read_text(encoding="utf-8"))
+            report = json.loads(next(Path(folder).glob("discovery-*.json")).read_text(encoding="utf-8"))
             self.assertEqual([j["id"] for j in report["jobs"]], ["good:123"])
             self.assertNotIn("injected-secret", json.dumps(report))
             self.assertEqual([j["id"] for j in read_history(Path(folder) / "state.sqlite3")], ["good:123"])
@@ -184,16 +184,17 @@ class ApplicationStateTests(unittest.TestCase):
         with patch("job_scout.fetch_jobs", return_value=jobs):
             self.assertEqual(scout_main([*self.args, "--boards", "test", "--output",
                                          str(self.folder), *extra]), 0)
-        return json.loads(sorted(self.folder.glob("shortlist-*.json"))[-1].read_text(encoding="utf-8"))
+        return json.loads(sorted(self.folder.glob("discovery-*.json"))[-1].read_text(encoding="utf-8"))
 
-    def test_all_states_persist_and_filter_before_limit(self):
+    def test_all_states_persist_and_only_unhandled_ids_are_fresh(self):
         jobs = [fixture(id=f"test:{n}") for n in range(9)]
         self.search(jobs)
         for job, status in zip(jobs, STATES):
             self.assertEqual(scout_main([*self.args, "--mark", job["id"], status]), 0)
-        run = self.search(jobs, "--all-locations", "--limit", "3")
-        expected = [j["id"] for j, state in zip(jobs, STATES) if state in FRESH_STATES] + ["test:7"]
-        self.assertEqual([j["id"] for j in run["jobs"]], expected)
+        run = self.search(jobs, "--all-locations")
+        expected = [j["id"] for j, state in zip(jobs, STATES) if state in FRESH_STATES] + ["test:7", "test:8"]
+        self.assertEqual(run["fresh_job_ids"], expected)
+        self.assertEqual(len(run["jobs"]), 9)
         self.assertEqual({r["id"]: r["status"] for r in read_history(self.state)},
                          {j["id"]: STATES[n] if n < len(STATES) else "NEW" for n, j in enumerate(jobs)})
 
@@ -205,7 +206,8 @@ class ApplicationStateTests(unittest.TestCase):
         self.assertEqual(read_history(self.state)[0], original)
         run = self.search([fixture(title="Senior Accountant II")])
         updated = read_history(self.state)[0]
-        self.assertEqual(run["jobs"], [])
+        self.assertEqual(run["fresh_job_ids"], [])
+        self.assertEqual(run["jobs"][0]["application_status"], "APPLIED")
         self.assertEqual(updated["first_seen"], original["first_seen"])
         self.assertEqual(updated["status_updated_at"], original["status_updated_at"])
         self.assertEqual(updated["job"]["title"], "Senior Accountant II")
@@ -239,7 +241,7 @@ class ApplicationStateTests(unittest.TestCase):
             self.assertEqual(scout_main([*self.args, "--output", str(self.folder)]), 3)
             fetch.assert_not_called()
         self.assertEqual(self.state.read_bytes(), b"not a SQLite database")
-        self.assertEqual(list(self.folder.glob("shortlist-*")), [])
+        self.assertEqual(list(self.folder.glob("discovery-*")), [])
 
     def test_history_survives_windows_console_encoding(self):
         record_jobs(self.state, [fixture(description="Non\u2011breaking hyphen and \u5de5\u4f5c")], TEST_REGISTRY)
@@ -274,12 +276,14 @@ class ApplicationStateTests(unittest.TestCase):
         invoke("--boards", "test", "--output", str(first))
         first_run = json.loads(next(first.glob("*.json")).read_text(encoding="utf-8"))
         chosen = first_run["jobs"][0]["id"]
-        self.assertEqual(len(first_run["jobs"]), 5)
+        self.assertEqual(len(first_run["jobs"]), 6)
         invoke("--mark", chosen, "APPLIED")
         invoke("--boards", "test", "--output", str(second))
         rerun = json.loads(next(second.glob("*.json")).read_text(encoding="utf-8"))
-        self.assertEqual(len(rerun["jobs"]), 5)
-        self.assertNotIn(chosen, [j["id"] for j in rerun["jobs"]])
+        self.assertEqual(len(rerun["jobs"]), 6)
+        self.assertNotIn(chosen, rerun["fresh_job_ids"])
+        self.assertEqual(len(rerun["fresh_job_ids"]), 5)
+        self.assertEqual(next(j for j in rerun["jobs"] if j["id"] == chosen)["application_status"], "APPLIED")
         history = read_history(self.state)
         self.assertEqual(len(history), 6)
         self.assertEqual(next(r for r in history if r["id"] == chosen)["status"], "APPLIED")
@@ -328,21 +332,21 @@ class CommuteTests(unittest.TestCase):
         self.assertEqual(outbound["destination"], inbound["origin"])
         self.assertEqual(outbound["travelmode"], ["driving"])
 
-    def test_commute_does_not_displace_higher_scoring_job(self):
+    def test_commute_does_not_change_family_order(self):
         weights, rejects = load_rules()
-        practical = evaluate(fixture(id="practical", description="journal entries"), weights, rejects)
+        practical = evaluate(fixture(id="practical", title="Controller", description="journal entries"), weights, rejects)
         unknown = evaluate(fixture(), weights, rejects)
         current_review = {**self.review, "checked_on": date.today().isoformat()}
-        selected = select_shortlist([unknown, practical], self.settings, {"practical": current_review}, 1)
-        self.assertEqual(selected[0]["id"], "test:1")
+        selected = select_discovery([unknown, practical], self.settings, {"practical": current_review})
+        self.assertEqual([j["id"] for j in selected], ["practical", "test:1"])
 
-    def test_default_five_without_commute_quota(self):
+    def test_all_seven_without_commute_quota(self):
         jobs = [fixture(id=f"test:{n}") for n in range(7)]
         with tempfile.TemporaryDirectory() as folder:
             with patch("job_scout.fetch_jobs", return_value=jobs):
                 self.assertEqual(main(["--boards", "test", "--output", folder]), 0)
-            report = json.loads(next(Path(folder).glob("shortlist-*.json")).read_text(encoding="utf-8"))
-            self.assertEqual(len(report["jobs"]), 5)
+            report = json.loads(next(Path(folder).glob("discovery-*.json")).read_text(encoding="utf-8"))
+            self.assertEqual(len(report["jobs"]), 7)
             rendered = next(Path(folder).glob("*.md")).read_text(encoding="utf-8")
             self.assertNotIn("Shortfall", rendered)
             self.assertNotIn("## Commute unverified", rendered)

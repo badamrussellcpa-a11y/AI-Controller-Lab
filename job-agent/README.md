@@ -4,16 +4,17 @@
 
 The current local pilot has a validated employer registry, canonical employer
 identity, explicit pool placement, schema v2, synthetic-tested migration and
-observed source-run persistence. **Full v1 remains in progress**. The
+observed source-run persistence. Task 3 adds broad role classification and complete
+employer-grouped discovery. **Full v1 remains in progress**. The
 [approved product contract](master_prompt.md) still plans the researched final
-population, broad discovery, employer suppression, factual application portfolio
-and optional private Excel export. Current Top 5
-behavior remains intact; it is no longer the eventual product acceptance target.
+population, employer suppression, factual application portfolio and optional
+private Excel export. Normal discovery no longer truncates to Top 5.
 Permanent close/recovery procedures live in
 [OPERATING_SYSTEM.md](../OPERATING_SYSTEM.md), not this operating guide.
 
-Fetches public Greenhouse employer feeds, screens accounting titles, applies the
-weights in `search_rules.md`, and writes a readable shortlist plus a JSON snapshot.
+Fetches public Greenhouse employer feeds, classifies accounting/finance titles,
+collects informational weighted evidence from `search_rules.md`, and writes a
+complete discovery report plus a JSON snapshot.
 No paid API, cloud database, extra Python packages, or application submissions.
 
 ## Run from the AI-Controller-Lab terminal
@@ -21,7 +22,7 @@ No paid API, cloud database, extra Python packages, or application submissions.
 Fresh databases initialize schema v2. An existing legacy database deliberately
 stops before fetching or updating jobs; it requires separately authorized migration
 after private backup/restoration preparation (see below). Never delete history to
-get past that stop. Task 2 did not migrate Adam's private database.
+get past that stop. Tasks 2 and 3 did not migrate Adam's private database.
 
 If Python is already available in your VS Code terminal:
 
@@ -39,18 +40,21 @@ was verified during the build and can be used instead:
 This fallback belongs to the desktop app and may move after an app update. A normal
 Python 3.10+ installation is sufficient; no dependency installation is needed.
 
-Open the newest `shortlist-*.md` in `job-agent/results/`. Each run creates a new
+Open the newest `discovery-*.md` in `job-agent/results/`. Each run creates a new
 timestamped report. The accompanying JSON retains descriptions and evidence.
+Older shortlist files are historical snapshots, not today's discovery contract.
 The existing `job_tracker.csv` is a separate manual tracker; its sample rows are
 not inputs to this live search and are never overwritten.
 
 ## Options
 
-- `--all-locations`: include target roles outside the initial location screen.
+- `--all-locations`: also show explicitly incompatible locations for inspection.
+  Ambiguous geography is already included normally with a location-review flag.
 - `--boards rocketlab spacex`: choose explicitly registered ACTIVE board tokens.
   Unknown, BENCH or PAUSED sources now fail visibly instead of guessing identity.
 - `--registry PATH`: use another validated JSON registry; default employers.json.
-- `--limit 20`: override the default five-result shortlist to show at most 20 candidates.
+- `--limit`: retired; any supplied value produces an explicit error before
+  database/network work. Remove it to obtain untruncated discovery.
 - `--output PATH`: write snapshots to a different folder.
 - `--state-file PATH`: use a different SQLite state file (parent folder must exist).
 - `--mark JOB_ID STATE`: update a saved job without fetching feeds.
@@ -81,10 +85,12 @@ python .\job-agent\job_scout.py --history
 Replace the example ID with a real ID from your run. Marking a job records your
 decision locally; it does not submit an application. Allowed states: `NEW`,
 `SHORTLISTED`, `APPLIED`, `INTERVIEW`, `REJECTED`, `OFFER`, `SKIP`.
-Only `NEW` and `SHORTLISTED` jobs qualify for fresh recommendations. Filtering
-happens before the Top 5 limit, so other eligible jobs can fill the available
-slots. Fewer than five is valid. Viewing a job does not change its state;
-unhandled jobs may reappear. Use `--mark ID NEW` to deliberately reopen a job.
+Complete discovery includes handled jobs with their state and a “not a fresh
+application recommendation” label. Only NEW/SHORTLISTED jobs within the broad
+location policy appear in the JSON fresh_job_ids list and unhandled count.
+That list is a job-state distinction, not verified actionability or employer
+suppression. Viewing a job does not change its state; unhandled jobs may reappear.
+Use --mark ID NEW to deliberately reopen a job.
 
 The default store is `job-agent/application_state.sqlite3`, independent of the
 working directory and `--output`. Use the same `--state-file` for every command
@@ -115,23 +121,52 @@ JSON readers recover the original text.
 
 ## How to read results
 
-- Score = matched signal weights / total weights, rounded to 0–100. Repeated
-  keywords do not add extra points. This measures evidence coverage only.
-- Candidates with excluded-topic mentions follow unflagged candidates, scores
-  rank next, and your role priority breaks ties. Commute checks do not affect
-  selection or ranking. The broad LA/remote location screen still applies.
-- Finance Manager needs both an accounting signal and a leadership signal.
+- Accounting-signal coverage = matched signal weights / total weights, rounded
+  to 0–100. Each signal counts once. It never gates inclusion, sorting or a limit,
+  and is not hiring probability, candidate fit or job quality.
+- Reports group by canonical employer (display-name order, then employer ID).
+  Within each employer: CLEAR MATCH first, then REVIEW NEEDED, family display
+  order, title and stable ID. Pay, coverage and commute do not control order.
+- CLEAR MATCH means an approved primary title family, including Controller,
+  Assistant Controller, Accounting Manager variants and Senior Accountant.
+  REVIEW NEEDED covers senior/management adjacent families (FP&A, treasury, tax,
+  audit, payroll, AP/AR and finance leadership), ambiguous scope and review flags.
+- Finance Manager and credit/accounting operations use a separate description
+  scope check: accounting/finance responsibility terms, not numeric coverage.
+  Missing descriptions remain REVIEW NEEDED; nonempty descriptions without that
+  scope are excluded for those ambiguous families.
 - Excluded terms in titles reject a job. Mentions in descriptions flag manual
   review because a keyword alone cannot establish the role's actual focus.
-- The initial location screen recognizes selected LA-area city names and explicit
-  remote locations. Remote does not establish California eligibility. The LA city
-  list is incomplete; use `--all-locations` to inspect omitted roles.
+- Recognized LA-area/hybrid and explicit California/nationwide remote labels
+  surface normally. Ordinary Remote/US, unknown cities and mixed remote-region
+  labels stay visible as REVIEW NEEDED — LOCATION. Explicit outside-area state/
+  region labels and California exclusions are omitted normally, retained in
+  history, and visible with --all-locations. Rules are conservative heuristics,
+  not geocoding or verified eligibility; no commute time is inferred.
 - Pay is quoted as source excerpts, not converted into assumed annual base pay.
   Unknown pay is not zero. Your salary preference is shown but does not yet filter
   or boost a result. Non-dollar compensation needs manual review.
-- Keywords can occur in qualifications, negations, or company boilerplate. Read the
-  evidence and listing. Scores are not probabilities or final suitability judgments.
-- Resume focus prompts suggest topics only; they do not invent your experience.
+- Keywords can occur in qualifications, negations or boilerplate. Read the source
+  evidence. Adam + ChatGPT handle strategic fit, application writing and interviews.
+
+Title exclusions retain unrelated controller/engineering/product/sales uses,
+junior/staff/clerk/bookkeeper/intern roles and excluded lending/insurance topics.
+See search_rules.md for family order, topic list and explanation; job_scout.py
+holds the deterministic patterns. No deterministic classifier guarantees perfect
+recall. Complete means no Top-N hiding of the population recognized by these rules.
+
+The report shows source health for every selected board and employer sections
+even when no roles are displayed. Any failed or deliberately unsearched ACTIVE
+board makes source coverage INCOMPLETE. A successful empty source is reported
+separately from failure; --boards is explicitly a subset when applicable.
+
+JSON retains a flat, employer-ordered jobs list and adds employer metadata,
+fresh_job_ids, coverage_complete, active_source_count, excluded_location_count and
+discovery_policy=accounting-finance-v3. Per-job review_status is CLEAR MATCH or
+REVIEW NEEDED, with classification_reason and location_classification.
+The old score key is replaced by accounting_signal_coverage. Existing historical
+snapshots are not rewritten; refreshed listing JSON acquires the new fields.
+No SQLite schema change or migration is introduced by Task 3.
 
 ## Verify changes
 
@@ -142,7 +177,7 @@ python -m unittest discover -s .\job-agent -p "test_*.py" -v
 Substitute the verified interpreter path above if `python` is unavailable.
 Tests cover false titles, weighted scoring, eligibility caveats, excluded-topic
 review, duplicates, pay excerpts, out-of-area filtering, feed failures, persistent
-states, all exclusion states, unknown IDs, reopening, absent-job retention,
+states, handled-state labeling, unknown IDs, reopening, absent-job retention,
 transaction rollback, corrupt state, and Windows history output. Tests use
 temporary databases and never modify your default application history.
 
@@ -203,7 +238,7 @@ Before any future real migration: stop Scout, obtain explicit Adam authorization
 make an approved private SQLite-consistent backup (including any needed journal/WAL
 state), establish a restoration plan and test restoration as appropriate. Rehearse
 on an approved copy before touching the original. Git does not back up this data.
-Do not run a migration on the real default database as part of Task 2.
+Do not run a migration on the real default database as part of Task 3.
 
 For an existing **synthetic test database only**, the command shape is:
 
@@ -217,9 +252,12 @@ These are placeholders, not a command to paste against real history.
 
 Each completed run stores one observation per attempted board: UTC attempt timestamp,
 fetch success, count of normalized postings returned, count of unique currently
-recognized target roles, and an error category on failure. Relevant counts are
-before location, job-state and Top-5 filtering. Repeated IDs count once as relevant;
+recognized accounting/finance roles, and an error category on failure. Relevant
+counts are before location filtering and independent of job state. Repeated IDs count once as relevant;
 postings count reflects the fetched list. Invalid feed responses are failed fetches.
+Task 3 broadens the recognition policy. Older narrow-policy observations are not
+rewritten and should not be compared as if the definition of relevant never changed.
+New reports identify the discovery policy; source-run tables/schema stay unchanged.
 
 Successful empty feeds have zero counts; failures have NULL counts, never zero
 yield. Only the exception class/category is persisted, not arbitrary error payloads.
@@ -231,9 +269,24 @@ Job refreshes and source observations commit together. An interrupted process or
 failed state write is not a completed observation batch; an old report is not proof
 that the current run succeeded. Existing per-feed report health remains available.
 
-## Task 2 verification — September 26, 2026
+## Task 3 verification — September 26, 2026
 
-61 tests pass: 34 existing regressions and 27 focused registry/migration/observation
+81 tests pass: 20 focused discovery tests plus 61 retained/adapted regressions.
+All 27 registry/migration tests and four URL-security tests pass. Fixtures verify
+primary/adjacent/excluded roles, seven zero-coverage jobs all visible, canonical
+employer grouping, stable non-score ordering, retired --limit, ambiguous/incompatible
+geography, all seven truthful states, source-failure/subset disclosure and escaped
+external headings/context. Existing Top-5 test expectations were deliberately
+updated to complete-discovery expectations, not silently dropped.
+
+No new live-feed acceptance or broad security scan was performed. All test state
+is synthetic/temporary; no private application database was opened or modified.
+The database schema, registry entries, dependency footprint and SECURITY policy
+remain unchanged. v1 acceptance/release remains open.
+
+## Historical Task 2 verification — September 26, 2026
+
+61 tests passed: 34 existing regressions and 27 focused registry/migration/observation
 tests. Migration tests use synthetic temporary databases, preserve original values,
 and verify byte-for-byte rollback after unmapped identities and injected failure.
 Separate-process tests verify persistence and handled-state exclusion. Four-pilot
@@ -250,7 +303,8 @@ ingestion and revalidates/encodes them at Markdown output; focused tests passed.
 This is not a subsequent full scan or security clearance for planned changes.
 Task 1 on September 26 changed documentation only; it did not rerun this suite or
 live acceptance. A deterministic acceptance test uses separate Python processes
-for run → mark APPLIED → rerun and verifies replenishment to five.
+for run → mark APPLIED → rerun formerly verified replenishment to five; Task 3's
+updated contract verifies preserved visibility/state and exclusion from unhandled IDs.
 
 Live acceptance also passed with an isolated test database: four feeds succeeded
 on both runs, returning 3,428 postings and nine target-role records. The first
@@ -269,8 +323,8 @@ Historically, live Controller coverage and application-ready summary acceptance
 were unverified; the run contained Senior Accountant and Accounting Manager roles.
 Runtime application-ready summaries/resume bullets/recruiter messages and
 algorithmic Top 5 are now superseded requirements, not retroactively passed tests.
-Primary Controller eligibility remains in the future discovery contract. Existing
-evidence and resume-focus prompts remain current output; deeper candidate analysis
+Primary Controller eligibility is now fixture-tested in broad discovery. Evidence
+remains current output; runtime resume-focus prompts were removed. Deeper candidate analysis
 belongs to Adam + ChatGPT. No release is declared.
 
 `browser.py` and `browser_test.py` remain earlier browser experiments; they are not
@@ -287,10 +341,9 @@ not supply travel times to the program and need no mapping subscription. Open a
 link, confirm the actual office, and check expected weekday arrival/departure
 times. With a travel-time range, use the upper bound for conservative planning.
 
-Current behavior (not the redesigned acceptance target): results are
-capped at five by default, with fewer shown if fewer match. Commute links are
-optional and there is no commute quota or commute-based sorting. Application-state
-tracking now excludes handled jobs; fresh does not guarantee previously unseen.
+Current discovery is untruncated. Commute links are optional, with no commute quota
+or commute-based sorting. Application-state tracking labels handled jobs truthfully;
+the separate unhandled-job IDs do not guarantee previously unseen opportunities.
 Runs remain manual.
 
 To retain a checked route, ask the assistant to record the estimates and office

@@ -2,8 +2,9 @@
 
 **Approved direction, September 26, 2026. Not a claim of implemented functionality.**
 Task 2 implements the registry, canonical identity, explicit pool placement,
-schema/migration and observed-source foundation described below. Broader discovery,
-employer suppression, portfolio and export remain planned.
+schema/migration and observed-source foundation described below. Task 3 implements
+broader deterministic discovery and employer-grouped output. Employer suppression,
+portfolio and export remain planned.
 The current machine is documented in [README.md](README.md); milestones and
 acceptance are in [ROADMAP.md](../ROADMAP.md). Follow
 [SECURITY.md](../SECURITY.md) and [OPERATING_SYSTEM.md](../OPERATING_SYSTEM.md).
@@ -37,11 +38,14 @@ observed accounting-job yield, size, remote opportunity, industry/background fit
 and hiring activity. Unknowns stay unknown; do not invent employer statistics.
 The initial Top 10 require later research and separate Adam approval.
 
-## Discovery and eligibility — planned
+## Discovery and eligibility — implemented in Task 3; live acceptance open
 
 Surface **all** broadly relevant accounting/finance opportunities from the active
-population. Do not hide otherwise relevant jobs behind Top 5. The current default
-Top 5 remains implemented until a later task changes it.
+population. Task 3 removes Top-5 truncation and retires --limit with a clear error.
+Output is grouped by canonical employer, then CLEAR MATCH before REVIEW NEEDED,
+family order and stable title/ID. Neither coverage nor salary controls ordering.
+Completeness is bounded by the documented deterministic rules and successfully
+searched sources; failures or omitted ACTIVE sources are explicitly disclosed.
 
 Primary roles: Controller, Assistant Controller, Accounting Manager, Senior
 Accountant, and accounting-oriented Finance Manager. Potentially relevant
@@ -61,6 +65,12 @@ best-job ranking. Preserve source evidence and distinguish observations from
 manual judgments. Salary preferences remain $120,000+ ideal and consideration
 from $100,000 for strong opportunities, not fabricated pay or an implemented
 salary filter. Current sector exclusions and weights are in search_rules.md.
+
+The complete discovery view includes handled jobs with their saved states plainly
+shown. The inexpensive fresh_job_ids field lists only NEW/SHORTLISTED jobs within
+the broad location policy; it means unhandled state, not verified actionability or
+candidate fit. Absent jobs remain in history, not falsely presented as current.
+Task 3 changes no database schema or migration behavior.
 
 ## Job state and separate employer state — planned extension
 
