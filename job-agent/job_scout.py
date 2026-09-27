@@ -293,7 +293,7 @@ def render_report(run):
              *[f"- {md(job_id)}" for job_id in run.get("selection_job_ids", [])],
              "", "## Source health", ""]
     if "active_employer_count" in run:
-        lines.append(f"Configured ACTIVE employers: {run['active_employer_count']} (fewer than ten is valid; PILOT does not mean final approved selection).")
+        lines.append(f"Configured ACTIVE employers: {run['active_employer_count']} (Product Owner-configured search cycle; no fixed count quota. PILOT is not APPROVED).")
     lines.append(f"Selected source boards: {selected_count} of {active_count} ACTIVE boards.")
     for source in sources:
         lines.append(f"- {md(source['board'])}: {md(source['status'])}")

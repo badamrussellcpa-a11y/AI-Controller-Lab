@@ -2,15 +2,16 @@
 
 ## Current versus planned
 
-The current local pilot has a validated employer registry, canonical employer
+The current local system has a validated employer registry, canonical employer
 identity, explicit pool placement, schema v3, synthetic-tested migration and
 observed source-run persistence. Task 3 adds broad role classification and complete
 employer-grouped discovery. Task 4 adds explicit application/event history,
 derived employer suppression, reapply review, opportunity-specific overrides and
-legacy reconciliation. **Full v1 remains in progress**. The
-[approved product contract](master_prompt.md) still plans the researched final
-population, broader strategic portfolio/manual opportunities and optional
-private Excel export. Normal discovery no longer truncates to Top 5.
+legacy reconciliation. Task 5 configures seven Product Owner-approved ACTIVE
+employers for the current cycle. **Full v1 remains in progress**. The
+[approved product contract](master_prompt.md) leaves usefulness acceptance, optional
+minimal portfolio/Excel work, any private migration, final security review and
+Release Close open. Normal discovery no longer truncates to Top 5.
 Permanent close/recovery procedures live in
 [OPERATING_SYSTEM.md](../OPERATING_SYSTEM.md), not this operating guide.
 
@@ -67,9 +68,10 @@ not inputs to this live search and are never overwritten.
   mutually exclusive with all other actions. Requires backup/restoration preparation
   and explicit approval before use on real data.
 
-Default pilot coverage: Rocket Lab, SpaceX, Figma, and Reddit. These are starter
-data sources, not endorsements of employers or a complete market search. A board
-can legitimately have zero target roles. Source failures are visible in the report.
+Default approved cycle: Muck Rack, LaunchDarkly, BaubleBar, Airtable, Figma, Reddit
+and Rocket Lab. SpaceX remains PAUSED. This is not a complete market search; ACTIVE
+count is not a quota. A board can legitimately have zero recognized roles. Source
+failures are visible in the report and remain distinct from successful zero yield.
 Exit codes: 0 = all feeds succeeded; 1 = all feeds failed; 2 = partial feed failure.
 Exit 3 means registry/state access or validation failed (including no ACTIVE
 sources or a legacy schema needing explicit migration); no fresh report is
@@ -237,10 +239,64 @@ decisions supersede earlier dispositions visibly; old facts/decisions remain.
 Reconciliation never changes the legacy job label. Other application restrictions
 still apply. Pool placement stays independent.
 
-## Task 4 verification — September 26, 2026
+## Task 5 approved cohort and bounded source check — September 26, 2026
 
-Focused lifecycle/migration tests and the full regression suite use only synthetic
-temporary databases and simulated feeds. See BOOT_CONTEXT for final counts.
+Adam approved this seven-employer cycle after human/AI research. Scout executes the
+explicit configuration; it does not score, rank, select or substitute employers.
+The previous Top-10 target is superseded, not an unmet quota. Future cohorts require
+separate Product Owner approval. No private selection reasons are recorded. Unknown
+size, industry, compensation, work-arrangement and other optional facts stay unknown.
+
+The following source mappings were verified against public employer Greenhouse
+boards/careers pages and then exercised once through the existing fetch_jobs and
+evaluate functions. All seven were reachable and fetched successfully. Check time:
+2026-09-27 01:52:57 UTC (September 26 Pacific).
+
+| Employer | Canonical ID | Greenhouse board | Postings | Recognized roles |
+| --- | --- | --- | ---: | ---: |
+| Muck Rack | emp-muck-rack | [muckrack](https://job-boards.greenhouse.io/muckrack) | 9 | 1 |
+| LaunchDarkly | emp-launchdarkly | [launchdarkly](https://job-boards.greenhouse.io/launchdarkly) | 55 | 4 |
+| BaubleBar | emp-baublebar | [baublebar](https://job-boards.greenhouse.io/baublebar) | 9 | 3 |
+| Airtable | emp-airtable | [airtable](https://job-boards.greenhouse.io/airtable) | 3 | 0 |
+| Figma | emp-figma | [figma](https://job-boards.greenhouse.io/figma) | 163 | 2 |
+| Reddit | emp-reddit | [reddit](https://job-boards.greenhouse.io/reddit) | 150 | 5 |
+| Rocket Lab | emp-rocket-lab | [rocketlab](https://job-boards.greenhouse.io/rocketlab) | 526 | 5 |
+
+These are dated observations, not hiring statistics or guaranteed future counts.
+Recognized roles are unique jobs accepted by accounting-finance-v3 before location,
+job-state or employer-relationship filtering. The successful Airtable zero is not
+a failure and does not prove there are no other relevant opportunities elsewhere.
+The check establishes response/URL/record compatibility, not perfect recall, job
+eligibility, candidate fit or comparative usefulness. No individual application
+pages were opened and no applications/communications occurred.
+
+The sandbox network attempt failed with URLError; an approved retry using the same
+public fetcher succeeded. It added no ATS, credentials, dependencies or browser
+automation. No application database was opened or created by the live check; only
+aggregate source results were saved to ignored runtime evidence:
+results/task5-source-check-20260927-015258.json. The failed attempt is separately
+retained as task5-source-check-20260927-015226.json, with unknown/null counts, not zero.
+These files are local evidence, not part of the Git checkpoint. No previous source
+observations were rewritten and no private database was migrated or modified.
+
+28 focused foundation/configuration tests and all 112 tests passed. Two former
+four-pilot expectations now verify the approved seven; an added synthetic test
+verifies SpaceX job/application/source history survives becoming PAUSED. Existing
+canonical identity, invalid/duplicate mapping, lifecycle, complete-discovery and
+URL/security regression checks remain passing. Runtime logic changed only the
+report's count-quota wording; registry/schema/security behavior is unchanged.
+
+Later Product Owner acceptance should compare Scout output with separate ChatGPT/
+manual research of these same seven employers: missed/found roles, useful state/
+history and reduced repetitive work. Run that comparison as a separately bounded
+task; do not infer superiority or completeness from this source check. Optional
+minimal portfolio/Excel work, real-data migration, final security review and
+Release Close remain open. v1 is not complete.
+
+## Historical Task 4 verification — September 26, 2026
+
+30 focused lifecycle/migration tests and all 111 tests passed at the Task 4
+checkpoint, using synthetic temporary databases and simulated feeds.
 Coverage includes explicit facts/unknowns, active suppression with all seven fixture
 jobs visible, both rejection paths, engaged withdrawal, unresolved offers, scoped
 override/review decisions, restart history, legacy reconciliation, v2 migration and
@@ -317,8 +373,9 @@ temporary databases and never modify your default application history.
 
 employers.json is human-reviewed configuration, not employer research or executable
 instructions. Its format version is 1 (separate from SQLite schema version 3).
-The shipped entries are Rocket Lab, SpaceX, Figma and Reddit, all ACTIVE/PILOT,
-not Adam's final approved Top 10. No employer statistics were researched.
+Task 5 ships seven APPROVED/ACTIVE entries for Adam's current search cycle; SpaceX
+is retained PAUSED with its historical PILOT metadata. The original Rocket Lab,
+Figma and Reddit identities persist. See the Task 5 mapping/evidence below.
 
 Each entry requires employer_id, display_name, greenhouse_boards (one or more
 explicit tokens), approval_status and pool. Canonical IDs use lowercase letters/
@@ -331,8 +388,8 @@ duplicates), invalid tokens and unknown fields fail validation.
 Approval status is PILOT, APPROVED, PENDING or REJECTED. PENDING/REJECTED entries
 must be PAUSED. Multiple boards belong to the same employer only through explicit
 reviewed mappings. ACTIVE sources with PILOT/APPROVED status are fetched by default;
-BENCH/PAUSED are retained but not fetched, including through --boards. Fewer than
-ten ACTIVE employers is valid and the report shows the configured count.
+BENCH/PAUSED are retained but not fetched, including through --boards. ACTIVE means
+approved for the current cycle; there is no fixed count quota. The report shows it.
 No yield-based pool movement or automatic rotation exists. Application relationship
 is derived separately; it never changes ACTIVE/BENCH/PAUSED pool placement.
 

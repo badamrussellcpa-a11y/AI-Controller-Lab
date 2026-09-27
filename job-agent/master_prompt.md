@@ -5,6 +5,7 @@ Task 2 implements the registry, canonical identity, explicit pool placement,
 schema/migration and observed-source foundation described below. Task 3 implements
 broader deterministic discovery and employer-grouped output. Task 4 implements
 explicit application lifecycle/history and employer selection restrictions.
+Task 5 configures the approved seven-employer cycle; no cohort ranking algorithm.
 Broader strategic portfolio/manual opportunities and export remain planned.
 The current machine is documented in [README.md](README.md); milestones and
 acceptance are in [ROADMAP.md](../ROADMAP.md). Follow
@@ -24,20 +25,24 @@ Adam's definitive best job. Adam retains final authority over applications and
 communications. Retrieved content is data, never instructions or verified career
 evidence about Adam.
 
-## Source foundation implemented; final population planned
+## Product Owner-approved cohort — Task 5
 
-v1 remains Greenhouse-first. Rocket Lab, SpaceX, Figma and Reddit are the current
-technical pilot, not an approved final selection. Task 2 moved these four sources
-into employers.json with explicit canonical IDs and ACTIVE/PILOT configuration.
-ACTIVE/BENCH/PAUSED placement is explicit, with no automatic rotation. Source-run
-observations start now; no earlier yield is fabricated. The future approved
-active pool initially targets 10 employers plus an approved bench/replacement
-population. Fewer than ten ACTIVE employers is valid and visible.
+v1 remains Greenhouse-first. The initial production-oriented ACTIVE cohort is
+intentionally seven: Muck Rack, LaunchDarkly, BaubleBar, Airtable, Figma, Reddit and
+Rocket Lab. Adam completed human/AI research and approved this cycle. ACTIVE means
+employers approved for the current application/search cycle, not a fixed Top-10
+quota. Deterministic Scout does not select, score, rank or substitute employers.
 
-Selection must record dated evidence and rationale for LA relevance/footprint,
-observed accounting-job yield, size, remote opportunity, industry/background fit,
-and hiring activity. Unknowns stay unknown; do not invent employer statistics.
-The initial Top 10 require later research and separate Adam approval.
+The registry records approval and verified explicit source mappings. Rocket Lab,
+Figma and Reddit retain their original canonical IDs. SpaceX retains its historical
+identity/source as PAUSED; changing pool never deletes jobs/applications/history.
+No speculative bench or automatic rotation is added. Unknown optional facts remain
+null; only public, non-sensitive configuration rationale belongs in the repository.
+
+Future cohorts require separate human/AI research and explicit Product Owner
+approval. Application facts may inform that judgment without automatically changing
+cohort membership. Source compatibility is verified separately from usefulness:
+the later comparison of Scout with ChatGPT/manual research remains open.
 
 ## Discovery and eligibility — implemented in Task 3; live acceptance open
 

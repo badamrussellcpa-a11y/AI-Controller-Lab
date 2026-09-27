@@ -105,7 +105,16 @@ application labels with unknown history require explicit reconciliation first.
 Application facts, review/override decisions and evidence live in the private
 SQLite lifecycle tables, not this rules file. See README for the lifecycle policy.
 
+## Approved employer cohort — Task 5
+
+ACTIVE means Product Owner-approved for the current application/search cycle.
+The intentional seven are Muck Rack, LaunchDarkly, BaubleBar, Airtable, Figma,
+Reddit and Rocket Lab; employers.json owns their canonical/source mappings.
+SpaceX is retained PAUSED. There is no Top-10 quota, employer score or automatic
+rotation. Human + AI research informs Adam's decisions; Scout executes them.
+Future cohorts require separate approval. Unknown employer facts remain unknown.
+
 ## Still planned
 
-Researched final employer selection, broader strategic portfolio analytics,
-manual opportunities, employer replacement and Excel export remain planned.
+Live Product Owner usefulness acceptance, optional minimal portfolio/Excel work,
+any private migration, final security review and Release Close remain open.

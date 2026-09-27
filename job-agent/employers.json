@@ -2,23 +2,137 @@
   "version": 1,
   "employers": [
     {
-      "employer_id": "emp-rocket-lab",
-      "display_name": "Rocket Lab",
+      "employer_id": "emp-muck-rack",
+      "display_name": "Muck Rack",
       "greenhouse_boards": [
-        "rocketlab"
+        "muckrack"
       ],
-      "approval_status": "PILOT",
-      "approval_date": null,
+      "approval_status": "APPROVED",
+      "approval_date": "2026-09-26",
       "pool": "ACTIVE",
       "industry": null,
       "size_band": null,
       "company_stage_type": null,
       "la_evidence": null,
       "remote_evidence": null,
-      "selection_rationale": "Existing technical pilot source; not the approved final employer population.",
-      "research_reference": null,
-      "research_checked_date": null,
-      "confidence_notes": "No employer research performed for this registry foundation."
+      "selection_rationale": "Product Owner-approved employer for the current application/search cycle; membership is a human decision, not an algorithmic ranking.",
+      "research_reference": "https://job-boards.greenhouse.io/muckrack",
+      "research_checked_date": "2026-09-26",
+      "confidence_notes": "Source mapping checked for Task 5; no independent employer selection or scoring performed. Unknown optional facts remain null."
+    },
+    {
+      "employer_id": "emp-launchdarkly",
+      "display_name": "LaunchDarkly",
+      "greenhouse_boards": [
+        "launchdarkly"
+      ],
+      "approval_status": "APPROVED",
+      "approval_date": "2026-09-26",
+      "pool": "ACTIVE",
+      "industry": null,
+      "size_band": null,
+      "company_stage_type": null,
+      "la_evidence": null,
+      "remote_evidence": null,
+      "selection_rationale": "Product Owner-approved employer for the current application/search cycle; membership is a human decision, not an algorithmic ranking.",
+      "research_reference": "https://job-boards.greenhouse.io/launchdarkly",
+      "research_checked_date": "2026-09-26",
+      "confidence_notes": "Source mapping checked for Task 5; no independent employer selection or scoring performed. Unknown optional facts remain null."
+    },
+    {
+      "employer_id": "emp-baublebar",
+      "display_name": "BaubleBar",
+      "greenhouse_boards": [
+        "baublebar"
+      ],
+      "approval_status": "APPROVED",
+      "approval_date": "2026-09-26",
+      "pool": "ACTIVE",
+      "industry": null,
+      "size_band": null,
+      "company_stage_type": null,
+      "la_evidence": null,
+      "remote_evidence": null,
+      "selection_rationale": "Product Owner-approved employer for the current application/search cycle; membership is a human decision, not an algorithmic ranking.",
+      "research_reference": "https://job-boards.greenhouse.io/baublebar",
+      "research_checked_date": "2026-09-26",
+      "confidence_notes": "Source mapping checked for Task 5; no independent employer selection or scoring performed. Unknown optional facts remain null."
+    },
+    {
+      "employer_id": "emp-airtable",
+      "display_name": "Airtable",
+      "greenhouse_boards": [
+        "airtable"
+      ],
+      "approval_status": "APPROVED",
+      "approval_date": "2026-09-26",
+      "pool": "ACTIVE",
+      "industry": null,
+      "size_band": null,
+      "company_stage_type": null,
+      "la_evidence": null,
+      "remote_evidence": null,
+      "selection_rationale": "Product Owner-approved employer for the current application/search cycle; membership is a human decision, not an algorithmic ranking.",
+      "research_reference": "https://job-boards.greenhouse.io/airtable",
+      "research_checked_date": "2026-09-26",
+      "confidence_notes": "Source mapping checked for Task 5; no independent employer selection or scoring performed. Unknown optional facts remain null."
+    },
+    {
+      "employer_id": "emp-figma",
+      "display_name": "Figma",
+      "greenhouse_boards": [
+        "figma"
+      ],
+      "approval_status": "APPROVED",
+      "approval_date": "2026-09-26",
+      "pool": "ACTIVE",
+      "industry": null,
+      "size_band": null,
+      "company_stage_type": null,
+      "la_evidence": null,
+      "remote_evidence": null,
+      "selection_rationale": "Product Owner-approved employer for the current application/search cycle; membership is a human decision, not an algorithmic ranking.",
+      "research_reference": "https://job-boards.greenhouse.io/figma",
+      "research_checked_date": "2026-09-26",
+      "confidence_notes": "Source mapping checked for Task 5; no independent employer selection or scoring performed. Unknown optional facts remain null."
+    },
+    {
+      "employer_id": "emp-reddit",
+      "display_name": "Reddit",
+      "greenhouse_boards": [
+        "reddit"
+      ],
+      "approval_status": "APPROVED",
+      "approval_date": "2026-09-26",
+      "pool": "ACTIVE",
+      "industry": null,
+      "size_band": null,
+      "company_stage_type": null,
+      "la_evidence": null,
+      "remote_evidence": null,
+      "selection_rationale": "Product Owner-approved employer for the current application/search cycle; membership is a human decision, not an algorithmic ranking.",
+      "research_reference": "https://job-boards.greenhouse.io/reddit",
+      "research_checked_date": "2026-09-26",
+      "confidence_notes": "Source mapping checked for Task 5; no independent employer selection or scoring performed. Unknown optional facts remain null."
+    },
+    {
+      "employer_id": "emp-rocket-lab",
+      "display_name": "Rocket Lab",
+      "greenhouse_boards": [
+        "rocketlab"
+      ],
+      "approval_status": "APPROVED",
+      "approval_date": "2026-09-26",
+      "pool": "ACTIVE",
+      "industry": null,
+      "size_band": null,
+      "company_stage_type": null,
+      "la_evidence": null,
+      "remote_evidence": null,
+      "selection_rationale": "Product Owner-approved employer for the current application/search cycle; membership is a human decision, not an algorithmic ranking.",
+      "research_reference": "https://job-boards.greenhouse.io/rocketlab",
+      "research_checked_date": "2026-09-26",
+      "confidence_notes": "Source mapping checked for Task 5; no independent employer selection or scoring performed. Unknown optional facts remain null."
     },
     {
       "employer_id": "emp-spacex",
@@ -28,54 +142,16 @@
       ],
       "approval_status": "PILOT",
       "approval_date": null,
-      "pool": "ACTIVE",
+      "pool": "PAUSED",
       "industry": null,
       "size_band": null,
       "company_stage_type": null,
       "la_evidence": null,
       "remote_evidence": null,
-      "selection_rationale": "Existing technical pilot source; not the approved final employer population.",
+      "selection_rationale": "Historical technical pilot retained outside the current approved ACTIVE cohort.",
       "research_reference": null,
       "research_checked_date": null,
-      "confidence_notes": "No employer research performed for this registry foundation."
-    },
-    {
-      "employer_id": "emp-figma",
-      "display_name": "Figma",
-      "greenhouse_boards": [
-        "figma"
-      ],
-      "approval_status": "PILOT",
-      "approval_date": null,
-      "pool": "ACTIVE",
-      "industry": null,
-      "size_band": null,
-      "company_stage_type": null,
-      "la_evidence": null,
-      "remote_evidence": null,
-      "selection_rationale": "Existing technical pilot source; not the approved final employer population.",
-      "research_reference": null,
-      "research_checked_date": null,
-      "confidence_notes": "No employer research performed for this registry foundation."
-    },
-    {
-      "employer_id": "emp-reddit",
-      "display_name": "Reddit",
-      "greenhouse_boards": [
-        "reddit"
-      ],
-      "approval_status": "PILOT",
-      "approval_date": null,
-      "pool": "ACTIVE",
-      "industry": null,
-      "size_band": null,
-      "company_stage_type": null,
-      "la_evidence": null,
-      "remote_evidence": null,
-      "selection_rationale": "Existing technical pilot source; not the approved final employer population.",
-      "research_reference": null,
-      "research_checked_date": null,
-      "confidence_notes": "No employer research performed for this registry foundation."
+      "confidence_notes": "Canonical identity and source mapping retained for historical continuity; no automatic reactivation."
     }
   ]
 }

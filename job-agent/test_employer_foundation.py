@@ -63,14 +63,28 @@ class FoundationTests(unittest.TestCase):
             return main(["--state-file", str(self.db), "--registry", str(self.config),
                          "--output", str(self.folder / "reports"), *extra])
 
-    def test_pilot_registry_preserves_four_sources_and_unknowns(self):
+    def test_approved_registry_has_exactly_seven_explicit_sources_and_unknowns(self):
         registry = load_registry()
         sources = select_sources(registry)
-        self.assertEqual(list(sources), ["rocketlab", "spacex", "figma", "reddit"])
-        self.assertTrue(all(e["approval_status"] == "PILOT" for e in sources.values()))
-        self.assertTrue(all(e["approval_date"] is None and e["industry"] is None
+        self.assertEqual({board: (e["employer_id"], e["display_name"]) for board, e in sources.items()}, {
+            "muckrack": ("emp-muck-rack", "Muck Rack"),
+            "launchdarkly": ("emp-launchdarkly", "LaunchDarkly"),
+            "baublebar": ("emp-baublebar", "BaubleBar"),
+            "airtable": ("emp-airtable", "Airtable"),
+            "figma": ("emp-figma", "Figma"), "reddit": ("emp-reddit", "Reddit"),
+            "rocketlab": ("emp-rocket-lab", "Rocket Lab")})
+        self.assertEqual(len({e["employer_id"] for e in sources.values()}), 7)
+        self.assertTrue(all(e["approval_status"] == "APPROVED" and e["approval_date"] == "2026-09-26"
                             for e in sources.values()))
-        self.assertEqual(len(sources), 4)  # Not a required ten or approved final pool.
+        for entry in sources.values():
+            for field in ("industry", "size_band", "company_stage_type", "la_evidence", "remote_evidence"):
+                self.assertIsNone(entry[field])
+        self.assertEqual(len(sources), 7)  # The approved cycle, not a quota of ten.
+        inactive = [e for e in registry["employers"] if e["pool"] != "ACTIVE"]
+        self.assertEqual([(e["employer_id"], e["pool"], e["greenhouse_boards"]) for e in inactive],
+                         [("emp-spacex", "PAUSED", ["spacex"])])
+        with self.assertRaises(ValueError):
+            select_sources(registry, ["spacex"])
 
     def test_invalid_canonical_ids_and_duplicates(self):
         for value in ("", "../x", "Bad ID", "name\ncommand", "a" * 65, None, True):
@@ -334,7 +348,7 @@ class FoundationTests(unittest.TestCase):
                 fetch.assert_not_called()
             self.assertFalse(self.db.exists())
 
-    def test_pilot_default_run_preserves_all_four_feeds_and_all_jobs(self):
+    def test_approved_default_run_fetches_only_seven_sources_and_keeps_all_jobs(self):
         calls = []
         def fetch(board, company):
             calls.append((board, company))
@@ -342,12 +356,38 @@ class FoundationTests(unittest.TestCase):
         with patch("job_scout.fetch_jobs", side_effect=fetch), redirect_stdout(io.StringIO()):
             self.assertEqual(main(["--state-file", str(self.db), "--output",
                                    str(self.folder / "reports")]), 0)
-        self.assertEqual(calls, [("rocketlab", "Rocket Lab"), ("spacex", "SpaceX"),
-                                 ("figma", "Figma"), ("reddit", "Reddit")])
+        self.assertEqual(calls, [("muckrack", "Muck Rack"), ("launchdarkly", "LaunchDarkly"),
+                                ("baublebar", "BaubleBar"), ("airtable", "Airtable"),
+                                ("figma", "Figma"), ("reddit", "Reddit"), ("rocketlab", "Rocket Lab")])
         run = json.loads(next((self.folder / "reports").glob("*.json")).read_text(encoding="utf-8"))
-        self.assertEqual(len(run["jobs"]), 8)
-        self.assertEqual(run["active_employer_count"], 4)
-        self.assertEqual(len(state.read_history(self.db)), 8)
+        self.assertEqual(len(run["jobs"]), 14)
+        self.assertEqual(run["active_employer_count"], 7)
+        self.assertEqual(len(state.read_history(self.db)), 14)
+        markdown = next((self.folder / "reports").glob("*.md")).read_text(encoding="utf-8")
+        self.assertIn("Configured ACTIVE employers: 7", markdown)
+        self.assertIn("no fixed count quota", markdown)
+
+    def test_pausing_former_pilot_preserves_job_application_and_source_history(self):
+        from application_lifecycle import record_application, read_applications, employer_relationships
+        approved = load_registry()
+        previous = deepcopy(approved)
+        previous["employers"] = [e for e in previous["employers"]
+                                 if e["employer_id"] in {"emp-rocket-lab", "emp-spacex", "emp-figma", "emp-reddit"}]
+        for entry in previous["employers"]:
+            entry["pool"] = "ACTIVE"
+            entry["approval_status"] = "PILOT"
+        state.record_jobs(self.db, [fixture(id="spacex:synthetic", company="Synthetic employer")], previous,
+                          [{"board": "spacex", "observed_at": "2026-09-26T00:00:00Z", "success": True,
+                            "fetched_count": 1, "relevant_count": 1, "error_kind": None}])
+        record_application(self.db, "spacex:synthetic")  # Invented fact, isolated temporary database.
+        jobs, applications = state.read_history(self.db), read_applications(self.db)
+        observations = self.query("SELECT * FROM source_runs")
+        state.record_jobs(self.db, [], approved)
+        self.assertEqual(state.read_history(self.db), jobs)
+        self.assertEqual(read_applications(self.db), applications)
+        self.assertEqual(self.query("SELECT * FROM source_runs"), observations)
+        self.assertEqual(self.query("SELECT pool, configured FROM employers WHERE employer_id='emp-spacex'"), [("PAUSED", 1)])
+        self.assertEqual(employer_relationships(self.db)["emp-spacex"]["status"], "ACTIVE APPLICATION")
 
     def test_inconsistent_source_job_identity_is_failed_not_guessed(self):
         self.assertEqual(self.run_scout([fixture(id="other:1")], ("--boards", "test")), 1)

@@ -1,17 +1,28 @@
 # AI Controller Lab Roadmap
 
-**Job Scout v1: in progress; Task 4 lifecycle/employer controls implemented; release remains open.**
+**Job Scout v1: in progress; Task 5 approved cohort configured; release remains open.**
 The [product contract](job-agent/master_prompt.md) owns detailed requirements.
 [OPERATING_SYSTEM.md](OPERATING_SYSTEM.md) owns Daily Close and Release Close.
 
 ## Current baseline and evidence
 
-Implemented: four public Greenhouse pilot feeds, broad deterministic classification,
+Implemented: seven Product Owner-approved ACTIVE Greenhouse sources, broad deterministic classification,
 informational accounting-signal coverage, untruncated employer-grouped Markdown/JSON
 discovery, standard-library SQLite job state and --mark/--history. Handled jobs
 remain visible with truthful states and are excluded from the unhandled-job IDs.
 Browser scripts are earlier
 experiments; the CSV is a separate manual tracker.
+
+Task 5 configures Muck Rack, LaunchDarkly, BaubleBar, Airtable, Figma, Reddit and
+Rocket Lab as APPROVED/ACTIVE. SpaceX remains in the registry PAUSED with its original
+identity/source. Cohort membership is a human + AI research/judgment decision,
+explicitly approved by Adam; seven is intentional, not a Top-10 shortfall. No employer
+score, replacement, speculative bench or rotation algorithm. Future cycles need
+separate approval. Public mapping/approval metadata is recorded; unknown facts stay null.
+28 focused foundation/configuration tests and all 112 tests passed. The bounded
+live check succeeded for all seven sources (915 postings, 20 recognized roles before
+location/state filtering). The operating guide records dated per-source evidence;
+this is structural compatibility, not final usefulness or completeness acceptance.
 
 Task 4 adds explicit application records, append-only events, UNKNOWN/NO/YES
 engagement, active employer suppression in selection_job_ids, reapply review after
@@ -35,8 +46,8 @@ private database access/migration, dependencies or broad security scan in Task 3
 
 Task 2 adds employers.json and validation, canonical IDs and explicit source
 mappings, ACTIVE/BENCH/PAUSED placement, schema v2, opt-in transactional legacy
-migration, and per-source run observations. Four ACTIVE/PILOT employers remain;
-no researched final population or automatic rotation. Normal legacy commands
+migration, and per-source run observations. At that checkpoint four ACTIVE/PILOT
+employers were configured, with no researched cohort or automatic rotation. Normal legacy commands
 stop for explicit migration; private data was not accessed/migrated in this task.
 Source observations distinguish failed fetches (null counts) from observed zero
 yield. Historical job records remain when configuration removes an employer.
@@ -63,15 +74,16 @@ suppression, portfolio history or export.
 - [x] Task 2: registry/canonical identity/pool/source-observation foundation and
   versioned schema with synthetic legacy migration/rollback tests. Local checkpoint
   364d49b verified at Task 3 opening; remote was not queried.
-- [ ] Research and obtain Adam's approval for initial active target of 10 employers
-  and bench; capture dated evidence, unknowns and selection rationale.
+- [x] Task 5: configure the initial Product Owner-approved seven-employer cycle,
+  preserving canonical identity and history; source mappings/live compatibility verified.
+  Earlier Top-10 target superseded by explicit approval; future cohorts need new approval.
 - [x] Task 3: broad accounting/finance discovery, review-needed eligibility,
   informational coverage and untruncated employer-grouped output; fixture verified.
   Local checkpoint 574d7e2 verified at Task 4 opening; remote was not queried.
 - [x] Task 4: separate employer suppression, explicit opportunity override, legacy
   reconciliation and factual application/event history; synthetic acceptance verified.
   New actual applications create new records; prior closed records remain immutable.
-  Task 4 manual checkpoint pending; no commit/push/tag performed by the agent.
+  Local checkpoint 0159b0e verified at Task 5 opening; remote was not queried.
 - [ ] Implement nullable application portfolio and manual/recruiter opportunities.
 - [ ] Implement private optional .xlsx analysis export with three approved views.
 - [ ] Verify redesigned acceptance and complete authorized Release Close.
@@ -82,8 +94,9 @@ tested before touching real history.
 
 ## Redesigned v1 acceptance gates — release remains open
 
-- [ ] Approved configurable Greenhouse employer population, active target 10 and
-  bench/paused operation; evidence-backed selection and visible source health.
+- [x] Configure approved cycle-based Greenhouse cohort with explicit pool mechanics
+  and visible source health: seven approved ACTIVE sources, SpaceX PAUSED. Task 5
+  verifies configuration/compatibility; final Product Owner usefulness remains open.
 - [ ] All broadly relevant opportunities surfaced; primary roles recognized;
   adjacent finance families/ambiguous geography shown REVIEW NEEDED; default junior
   exclusions and incompatible geography handled as specified. Empty live feeds

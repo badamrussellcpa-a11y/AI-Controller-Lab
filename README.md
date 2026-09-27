@@ -13,18 +13,22 @@ Git state read-only. Repository evidence takes precedence over conversational me
 
 ## Built versus planned
 
-- **Job Scout: working local pilot; v1 in progress.** Public Greenhouse retrieval,
+- **Job Scout: working local system; v1 in progress.** Public Greenhouse retrieval,
   broad deterministic role/location classification, complete employer-grouped
   discovery reports with informational accounting-signal coverage,
   private SQLite job state, employer registry/canonical identity, explicit pool
   placement, schema versioning and source-run observations are implemented. Task 4
   adds explicit application/event history, derived employer selection controls,
-  reapply review, job-specific overrides and legacy reconciliation. See the
+  reapply review, job-specific overrides and legacy reconciliation. Task 5 configures
+  seven Product Owner-approved ACTIVE employers for the current search cycle:
+  Muck Rack, LaunchDarkly, BaubleBar, Airtable, Figma, Reddit and Rocket Lab.
+  SpaceX is retained PAUSED. Seven is intentional; ACTIVE is not a quota. See the
   [current operating guide](job-agent/README.md).
-- **Approved Job Scout redesign: remaining planned functionality.** Researched and
-  approved final employer population,
-  broader strategic application portfolio/manual opportunities and private Excel
-  export remain to be implemented and accepted.
+- **Still open:** Product Owner usefulness comparison with separate ChatGPT/manual
+  research, optional minimal portfolio/Excel work, any separately authorized private
+  migration, final security review and Release Close. Employer selection belongs to
+  human + AI judgment; Scout executes approved configuration without an employer
+  scoring algorithm. Future cohorts require separate Product Owner approval.
 - **Future/learning projects:** Lumina Wearables training company, Controller
   Copilot (bank reconciliation, month-end close, audit PBC assistance), and Life
   Admin. These entries do not claim implemented production systems or authorize
