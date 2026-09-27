@@ -1,6 +1,6 @@
 # AI Controller Lab — current recovery context
 
-**Updated September 26, 2026. Task 5 cohort configured; Job Scout v1 remains in progress.**
+**Updated September 26, 2026. Task 5 committed; post-checkpoint learning reconciled; documentation-only Daily Close prepared, not committed/pushed. Release remains open.**
 
 Permanent procedures: [OPERATING_SYSTEM.md](OPERATING_SYSTEM.md).
 Security: [SECURITY.md](SECURITY.md). Product: [job-agent/master_prompt.md](job-agent/master_prompt.md).
@@ -59,12 +59,15 @@ correction plan for a factual entry error.
 
 ## Verified checkpoint and results
 
-Task 5 opened clean on main tracking origin/main at
-0159b0e46a388d93b4383af7efdba3885595a6da (Task 4 checkpoint).
-No remote query, staging, commit, push or tag was performed by the agent.
-Task 5 is a prepared bounded checkpoint, not a completed Daily/Release Close.
+Task 5 is committed at aab64a2eab60c7337a59e9e6ac6540aeb67a4be2. Adam reports it
+pushed and verified clean before this Daily Close. Current read-only Git inspection
+confirmed main tracking origin/main, a clean starting tree, and HEAD/local origin/main
+at that hash. No new remote query was made. The September 26 documentation changes
+are a prepared Daily Close, not a completed/pushed close or Release Close. No staging,
+commit, push or tag is authorized for this task.
 
-28 focused foundation/configuration tests and all 112 tests pass, including 30
+At the Task 5 checkpoint, 28 focused foundation/configuration tests and all 112
+tests passed, including 30
 Task 4 lifecycle tests, 20 Task 3 tests and four URL-security regressions. The two
 production-registry expectations now describe seven approved sources; a new test
 proves pausing SpaceX preserves job/application/source history. All automated tests
@@ -87,31 +90,71 @@ history, canonical multi-board identity, escaping, migration and rollback.
 v2 migration preserves all old rows exactly; injected failure restores original
 database bytes. v1 migration/rollback regressions remain passing.
 
-No private database was opened, migrated or modified. Metadata-only checks found
-no default database or sidecars before/after testing. No unrelated database search.
-No new dependency, ATS, schema, cost or external capability. SECURITY was reviewed;
-existing public-feed/local-data controls cover this configuration change. No broad
-security scan or final user acceptance was performed. Final release security review
-remains outstanding; prior URL remediation is not clearance for new code.
+During Task 5, no private database was opened, migrated or modified; its metadata-only
+checks found no default database/sidecars before or after those tests. This historical
+observation is not a claim about state after Adam's later manual run. Task 5 introduced
+no dependency, ATS, schema or external capability. SECURITY covered that configuration
+change. Final release security review remains outstanding; prior URL remediation is
+not clearance for later code. Today's documentation task accesses no application
+database, changes no runtime/configuration/schema and does not rerun the test suite.
+The 112-test result above is prior evidence, not today's execution.
+
+## Post-checkpoint acceptance and learning
+
+Adam reports running Scout with the verified interpreter after the Task 5 checkpoint:
+**915 postings → 20 accounting-finance-v3 roles → 18 displayed → 18 unhandled by
+job state within normal location policy**. All seven feeds were already reachable
+in Task 5. The ignored local evidence is
+job-agent/results/discovery-20260927-021901-686871.md; do not stage runtime output.
+This close records supplied evidence, without repeating the run or reading private
+state. Dated titles and interpretation are in job-agent/README.md.
+
+Independent ChatGPT/Atlas public research found substantially the same useful role
+population within these seven employers. Adam reviewed the possible Atlas-only
+Figma Senior Technical Revenue Analyst difference and was not interested in that
+role type; it does not warrant classifier expansion. Eighteen unhandled jobs does
+not mean eighteen selection-eligible or geographically verified applications.
+
+Scout demonstrates deterministic reduction/repeatability within its configured
+Greenhouse universe. It does not demonstrate broader-market completeness or
+commercial validation. Excellent employers on other systems are excluded. This
+material business consequence was not adequately challenged early; it is a product/
+architecture limitation, not a security defect or implementation failure.
+
+The learning distinction is Atlas/reasoning AI → Codex/implementation agent →
+deterministic Python/SQLite Scout. It became clear through the real project, not
+through a tutorial planned that way from inception. The open value question is
+whether repeatability/state/scale/control justify maintenance over AI-assisted
+discovery. Successful implementation alone does not answer it.
 
 ## Open work and exact next bounded task
 
-Verify Adam's Task 5 checkpoint, branch/upstream and clean working-tree state.
-Obtain a bounded Product Owner acceptance-comparison plan for Scout versus separate
-ChatGPT/manual research of the same seven approved employers, using isolated state
-and preserving source/date evidence. Do not change the cohort, expand ATS support,
-migrate private history, build portfolio/Excel features or perform Release Close
-without separate authorization.
+At the next session, inspect Git to determine whether Adam completed this prepared
+Daily Close checkpoint; do not assume the documentation was pushed. Then review
+whether Job Scout needs a final minimal closure/release disposition before shifting
+focus. Inventory unresolved acceptance/security and any private-migration need
+without opening private data; obtain an explicit scope disposition, not automatic
+feature authorization. No v1 completion or Release Close is claimed here.
 
-Remaining work: Product Owner usefulness acceptance, optional minimal portfolio/
-Excel layer, any authorized real/private migration, final security review and
-Release Close. Future cohorts require separate approval. v1 is not complete.
-No unresolved source-mapping or Product Owner issue blocks Task 5 configuration.
+The next major Controller Lab direction is **AI Controller Capability Benchmark
+planning**: define a cheap, bounded comparison of reasoning AI, existing tools and
+a manual baseline, with common cases, measures and privacy boundaries. ROADMAP owns
+the candidate tasks and measures. Do not implement the benchmark or automatically
+start Bank Recon. Future substantial builds must pass the Build-vs-Existing
+Capability Gate in OPERATING_SYSTEM.
+
+Excel, broader portfolio/manual opportunities, multi-ATS work and automatic employer
+rotation remain unapproved. Do not change the classifier for the reviewed Figma
+difference, migrate private history, change the cohort, or add Job Scout features
+without separately approved scope. There is no unresolved Task 5 source-mapping
+issue; incremental value and final release disposition remain open.
 
 ## Learning and governance
 
-[WP-011](workpapers/WP-011.md) explains the Task 5 cohort/configuration boundary.
-WP-010 explains Task 4's machine, components and actual code.
-Earlier workpapers retain historical context. OPERATING_SYSTEM now owns the
-Product Owner / AI development gate and Automation Traceability Principle:
-unknown is neither No nor Yes; execution success alone does not prove correctness.
+[WP-012](workpapers/WP-012.md) explains the acceptance learning and resource distinctions.
+[WP-011](workpapers/WP-011.md) preserves the Task 5 configuration checkpoint as written;
+WP-010 preserves Task 4's machine/components/code. Historical workpapers are not
+current next-task instructions. OPERATING_SYSTEM owns the integrated development/
+Build-vs-Existing Capability Gate and traceability principle; FOUNDER_PROFILE records
+professional learning preferences. Unknown remains unknown; execution success alone
+does not establish correctness or incremental product value.

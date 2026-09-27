@@ -1,14 +1,14 @@
 # Upgrade Ledger — Job Scout / AI Controller Lab
 
-Last reviewed: September 25, 2026  
+Last reviewed: September 26, 2026
 Next suggested review: October 25, 2026, or the next working project milestone  
 Purpose: Decide what to buy, when, and why as the project develops.
 
 ## Starting position
 
-This expands the Upgrade Ledger table recovered from the September 25 voice conversation, “Gym Workout Chat.” The project sequence discussed was Job Scout → accounting agent → File Butler. Creative automation remains a later experiment.
+This expands the Upgrade Ledger table recovered from the September 25 voice conversation, “Gym Workout Chat.” The project sequence discussed was Job Scout → accounting agent → File Butler. Creative automation remains a later experiment. This historical sequence is not authorization to build an accounting agent next; ROADMAP now starts with capability-benchmark planning.
 
-Current subscriptions, project implementation, income, and available cash have not been verified. Blank fields are unknown, not zero. All numerical decision thresholds below are proposed working rules to adjust, not universal financial benchmarks. No purchase is approved by this document.
+Adam reported a $100 Pro upgrade decision on September 26; account activation, billing and actual spending have not been independently verified. Project implementation is documented in BOOT_CONTEXT; income and available cash remain unverified. Blank fields are unknown, not zero. All numerical decision thresholds below are proposed working rules to adjust, not universal financial benchmarks. No purchase is approved by this document.
 
 **Decision path:** Identify a recurring constraint → try a practical free/local solution → price the full upgrade → test usefulness and affordability → trial, defer, or reject → review actual results.
 
@@ -18,7 +18,7 @@ USD prices checked September 25, 2026 where cited. Published starting prices exc
 
 | Upgrade | What it unlocks | Cost / proposed allowance | Free or existing alternative | Evidence that warrants review | Status |
 |---|---|---|---|---|---|
-| ChatGPT Pro | More usage capacity for building and analysis | Official starting price $100/month; Plus is $20/month. If currently on Plus, starting incremental cost is $80/month. Confirm selected tier at checkout. [1] | Existing plan; adjust workflow; compare occasional extra usage costs | Track 2 weeks: at least 3 meaningful limit interruptions per week, with lost productive time recorded. Trial only if the selected plan addresses that constraint. | Watch |
+| ChatGPT Pro | More usage capacity for building and analysis | Official starting price $100/month; Plus is $20/month. If currently on Plus, starting incremental cost is $80/month. Confirm selected tier at checkout. [1] | Existing plan; adjust workflow; compare occasional extra usage costs | Track 2 weeks: at least 3 meaningful limit interruptions per week, with lost productive time recorded. Trial only if the selected plan addresses that constraint. | User-reported upgrade decision; value review pending |
 | AI API usage | Let Job Scout or the accounting agent call AI from its own code | Variable and separate from the ChatGPT subscription. Proposed initial experiment allowance: $10/month, subject to budget approval. [2] | Manual processing through existing tools; deterministic code for simple rules | A working workflow needs programmatic AI; test 20–50 representative cases and measure cost per useful result, errors, and review time | Measure first |
 | Cloud database | Shared structured records across devices, users, or hosted jobs | Supabase is one example: Free $0; Pro starts at $25/month, with potential extras. Provider choice remains open. [3] | Local files or a local database with tested backups | Actual remote/shared access requirement, concurrent updates, or repeated sync problems. Test cloud need separately from paid-tier need. | Later |
 | Cloud hosting / scheduled worker | Runs while the laptop is off | Quote pending. Proposed first experiment allowance: $10/month, subject to provider fit and budget | Run manually or schedule on an available computer | At least 2 valuable runs missed in a month because the computer was off, or a concrete external-user access need | Later |
@@ -31,7 +31,7 @@ USD prices checked September 25, 2026 where cited. Published starting prices exc
 
 ## Cash-flow worksheet
 
-Fill this out before adding a recurring cost. Keep personal living costs and project operating costs visible without counting either twice.
+Use a private copy of this blank template before adding a recurring cost; never fill personal financial details into the public repository. Keep personal living costs and project operating costs visible without counting either twice.
 
 | Monthly input | Amount |
 |---|---:|
@@ -106,7 +106,14 @@ For variable services, use available billing controls and application-side usage
 | Review date | Upgrade | Evidence / actual spending | Decision and reason | Next review |
 |---|---|---|---|---|
 | 2026-09-25 | All candidates | Prior discussion recovered; current spend and cash flow unknown | Establish baseline and track constraints before a purchase decision | Next milestone or 2026-10-25 |
-| ____ | ____ | ____ | ____ | ____ |
+| 2026-09-26 | Pro upgrade decision reported as $100 | Adam reports that this learning cycle consumed meaningful time and contributed to the decision; actual billing and return are unverified | Evaluate value independently of custom coding; no claim that the subscription was wasted or recovered | Next capability benchmark / 2026-10-25 |
+
+Do not build custom automation to consume compute or justify a subscription. Use
+[OPERATING_SYSTEM.md](OPERATING_SYSTEM.md)'s Build-vs-Existing Capability Gate before
+substantial implementation. Reasoning, research, job-search support, interview
+preparation and capability benchmarking may provide value independently of coding;
+measure that value rather than assuming it. Historical price references above were
+not refreshed during this documentation close.
 
 ### Copy for each proposed purchase
 

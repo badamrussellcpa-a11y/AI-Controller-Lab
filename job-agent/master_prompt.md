@@ -6,7 +6,9 @@ schema/migration and observed-source foundation described below. Task 3 implemen
 broader deterministic discovery and employer-grouped output. Task 4 implements
 explicit application lifecycle/history and employer selection restrictions.
 Task 5 configures the approved seven-employer cycle; no cohort ranking algorithm.
-Broader strategic portfolio/manual opportunities and export remain planned.
+Broader strategic portfolio/manual opportunities and export are deferred candidate
+scope, not authorization to implement. September 26 post-checkpoint acceptance
+informs a value/closure review before any additional features.
 The current machine is documented in [README.md](README.md); milestones and
 acceptance are in [ROADMAP.md](../ROADMAP.md). Follow
 [SECURITY.md](../SECURITY.md) and [OPERATING_SYSTEM.md](../OPERATING_SYSTEM.md).
@@ -41,10 +43,32 @@ null; only public, non-sensitive configuration rationale belongs in the reposito
 
 Future cohorts require separate human/AI research and explicit Product Owner
 approval. Application facts may inform that judgment without automatically changing
-cohort membership. Source compatibility is verified separately from usefulness:
-the later comparison of Scout with ChatGPT/manual research remains open.
+cohort membership. Source compatibility is verified separately from usefulness.
+Adam's post-checkpoint comparison found substantially the same useful roles as
+independent AI-assisted research within these seven employers; dated evidence and
+limits are in [README.md](README.md).
 
-## Discovery and eligibility — implemented in Task 3; live acceptance open
+## Source boundary and incremental value — September 26 reconciliation
+
+The current architecture is Greenhouse-only and explicitly configured. Its business
+consequence is exclusion of potentially excellent employers using other ATS/career
+systems; it cannot represent the broader labor market. That consequence was not
+sufficiently challenged before substantial implementation. This is a product/
+architecture limitation, not a security defect or implementation failure.
+
+Scout demonstrates deterministic reduction/repeatability plus implemented state,
+history and controls. Whether these provide enough incremental value over reasoning-
+AI-assisted discovery to justify maintenance remains open. The possible Figma
+Senior Technical Revenue Analyst difference was reviewed by Adam and is not a
+material current defect or reason to expand the classifier.
+
+Apply the integrated Build-vs-Existing Capability Gate in OPERATING_SYSTEM before
+substantial additional implementation. The portfolio/export descriptions below
+preserve prior design intent if separately approved; they are not a next-task
+instruction. Excel, broader portfolio and multi-ATS implementation remain unapproved.
+Final minimal closure/release disposition requires Product Owner review.
+
+## Discovery and eligibility — implemented in Task 3; scoped live evidence recorded
 
 Surface **all** broadly relevant accounting/finance opportunities from the active
 population. Task 3 removes Top-5 truncation and retires --limit with a clear error.
@@ -119,7 +143,7 @@ guide for commands and narrow semantics. Any future real-data
 migration requires an approved private backup, restoration plan/test as appropriate,
 and explicit Adam authorization. Ordinary commands do not auto-migrate legacy data.
 
-## Factual application portfolio — planned
+## Factual application portfolio — deferred candidate scope
 
 Persist company, role/title, application date/status, seniority, known
 compensation/range, work arrangement, location/commute context, evidence-backed
@@ -131,7 +155,7 @@ Support manual/recruiter-inbound opportunities not discovered by Scout; recordin
 an opportunity must not fabricate an application. Separate private career/contact
 material from default analysis exports. The portfolio is not implemented today.
 
-## Optional Excel analysis export — planned
+## Optional Excel analysis export — deferred candidate scope
 
 SQLite remains authoritative. An optional .xlsx workbook is an analysis snapshot,
 not a second operational database or an import/writeback channel. No exporter or
@@ -165,8 +189,11 @@ safe link handling; security verification belongs to that implementation task.
 
 The old algorithmic Top-5 and runtime application-ready summary, resume-bullet
 and recruiter-message requirements are **superseded**, not satisfied by assertion.
-The eventual v1 goal is factual discovery/tracking/export and an evidence-backed
-handoff to Adam + ChatGPT. See the roadmap's uncompleted acceptance gates.
+The prior proposed v1 goal included discovery/tracking/export and an evidence-backed
+handoff to Adam + ChatGPT. Implemented discovery/tracking and scoped comparison are
+now evidence for a value review, not automatic authorization for the remaining
+export/portfolio scope. See the roadmap's open gates and deferred candidate criteria;
+no criterion is silently passed or removed by this reconciliation.
 
 No auto-apply, email/Gmail integration, LinkedIn automation, dashboard/UI, cloud
 database, paid job-search API, broad ATS expansion or unrelated refactoring.

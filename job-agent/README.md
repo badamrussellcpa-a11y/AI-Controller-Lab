@@ -9,9 +9,11 @@ employer-grouped discovery. Task 4 adds explicit application/event history,
 derived employer suppression, reapply review, opportunity-specific overrides and
 legacy reconciliation. Task 5 configures seven Product Owner-approved ACTIVE
 employers for the current cycle. **Full v1 remains in progress**. The
-[approved product contract](master_prompt.md) leaves usefulness acceptance, optional
-minimal portfolio/Excel work, any private migration, final security review and
-Release Close open. Normal discovery no longer truncates to Top 5.
+[approved product contract](master_prompt.md) now has scoped seven-employer
+usefulness evidence; incremental value and final closure/release disposition remain
+open. Optional portfolio/Excel/multi-ATS work is unapproved and must pass the
+Build-vs-Existing Capability Gate before any new implementation. Any private
+migration and final release security review require separate authorization. Normal discovery no longer truncates to Top 5.
 Permanent close/recovery procedures live in
 [OPERATING_SYSTEM.md](../OPERATING_SYSTEM.md), not this operating guide.
 
@@ -53,7 +55,7 @@ not inputs to this live search and are never overwritten.
 
 - `--all-locations`: also show explicitly incompatible locations for inspection.
   Ambiguous geography is already included normally with a location-review flag.
-- `--boards rocketlab spacex`: choose explicitly registered ACTIVE board tokens.
+- `--boards rocketlab figma`: choose explicitly registered ACTIVE board tokens.
   Unknown, BENCH or PAUSED sources now fail visibly instead of guessing identity.
 - `--registry PATH`: use another validated JSON registry; default employers.json.
 - `--limit`: retired; any supplied value produces an explicit error before
@@ -286,12 +288,59 @@ canonical identity, invalid/duplicate mapping, lifecycle, complete-discovery and
 URL/security regression checks remain passing. Runtime logic changed only the
 report's count-quota wording; registry/schema/security behavior is unchanged.
 
-Later Product Owner acceptance should compare Scout output with separate ChatGPT/
-manual research of these same seven employers: missed/found roles, useful state/
-history and reduced repetitive work. Run that comparison as a separately bounded
-task; do not infer superiority or completeness from this source check. Optional
-minimal portfolio/Excel work, real-data migration, final security review and
-Release Close remain open. v1 is not complete.
+At the Task 5 checkpoint, comparative usefulness acceptance was still pending.
+The following post-checkpoint observation adds scoped evidence; it does not turn
+source compatibility into proof of superiority or market completeness.
+
+## Post-checkpoint acceptance observation — September 26, 2026
+
+Evidence supplied by Adam for Daily Close: after committing/pushing Task 5 at
+`aab64a2eab60c7337a59e9e6ac6540aeb67a4be2`, he manually ran Scout with the verified
+Python runtime. The result was **915 postings → 20 accounting-finance-v3 recognized
+roles → 18 displayed under normal location policy → 18 unhandled by job state
+within that policy**. The local report is
+`results/discovery-20260927-021901-686871.md`; it remains ignored/private runtime
+evidence, not a committed artifact. This close records Adam's observation and
+comparison; it did not rerun Scout, inspect private state or independently repeat
+the public-web research. The earlier Task 5 check verified all seven feeds reachable.
+
+| Employer | Displayed titles reported by Adam |
+| --- | --- |
+| BaubleBar | Assistant Controller - Remote; Senior Accountant – Inventory and NetSuite – Remote; Senior Accountant-Revenue and General Ledger - Remote |
+| Figma | Senior Accountant; Director, Technical Revenue Accounting |
+| LaunchDarkly | Sr. Director, Assistant Controller; Senior Manager, Global Payroll; Sr. Director, Revenue Accounting & OTC Operations |
+| Muck Rack | Senior Accountant |
+| Reddit | Global Indirect Tax Manager; Global Indirect Tax Manager — Ireland; Global Payroll Lead; Senior Director, Product & Technology Finance |
+| Rocket Lab | Senior Manager, Corporate Accounting; Senior Manager, Technical Accounting & SEC Reporting; Senior Accountant; Director, Global Payroll and Employment Tax; Senior Technical Payroll Analyst II - ADP System Analyst |
+| Airtable | No recognized/displayed accounting role |
+
+Independent ChatGPT/Atlas public-web research of the same seven employers produced
+substantially the same useful role population, according to Adam's comparison.
+One possible Atlas-only Figma role, **Senior Technical Revenue Analyst**, was
+reviewed by Adam and was not of application interest. This difference is not a
+currently material defect and does not warrant classifier expansion. Not every
+retrieval difference creates an implementation requirement.
+
+This demonstrates strong deterministic reduction/repeatability within the approved
+Greenhouse population. It does not establish broader-market completeness, measured
+time/cost savings, superiority over reasoning AI, commercial validation or final
+v1 release acceptance. The 18 unhandled count is not proof of 18 employer-selection
+eligible jobs or confirmed geographic/candidate fit; ambiguous locations still
+need human review. No lifecycle/migration acceptance is inferred from this run.
+
+The material product boundary is configured Greenhouse feeds: otherwise excellent
+employers on other ATS/career systems are excluded. Independent reasoning AI/web
+research can investigate a broader public market. This is an architecture/product
+limitation whose business consequence should have been challenged before substantial
+implementation, not a security defect or an implementation failure.
+
+Scout's implemented strengths include repeatable classification, persistent state/
+history, source-health distinctions, employer/application controls and tests.
+The remaining value question is whether **repeatability, state, scale and control
+justify continued maintenance over reasoning-AI-assisted discovery**. No automatic
+Excel, portfolio or multi-ATS work follows. Optional work must pass the gate in
+[OPERATING_SYSTEM.md](../OPERATING_SYSTEM.md). Review minimal closure/release
+disposition next; final release acceptance and security review remain open.
 
 ## Historical Task 4 verification — September 26, 2026
 

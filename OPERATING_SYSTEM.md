@@ -24,14 +24,53 @@ continue the scoped work; material security/data-integrity risks still surface.
 
 ## Product Owner / AI development gate
 
+### Build-vs-Existing Capability Gate
+
+Before substantial custom implementation, establish:
+
+1. The outcome the Product Owner actually needs.
+2. What Atlas/reasoning AI can already do directly.
+3. What existing software, Excel, Work, connectors, APIs or other available tools
+   can do, within verified access and security boundaries.
+4. The specific capability gap that remains.
+5. The incremental value custom software should add: scale, repetition, speed,
+   lower cost, persistent state, reproducibility, auditability or local privacy.
+6. Material architectural constraints and their plain-English business consequences.
+7. A cheap proof-of-value before substantial implementation, where practical.
+
+Outcome → existing-capability benchmark → incremental-value hypothesis → material
+constraint disclosure → cheap proof-of-value → architecture proposal → Product
+Owner review and approval → bounded implementation → acceptance against the
+original value hypothesis → **KEEP / SIMPLIFY / KILL**.
+
+Successful implementation is not sufficient evidence that custom software should
+exist. Do not build to consume available compute or justify a subscription.
+Translate constraints before approval: “use configured Greenhouse feeds” means
+“exclude employers on other career systems and do not represent the broader job
+market.” Naming the technology alone does not establish informed approval.
+
 Material product/domain assumptions must be surfaced in plain English and approved
 by the Product Owner before they become implemented behavior. AI may exercise
 normal engineering discretion over immaterial implementation details; it must not
 silently convert material business/domain assumptions into requirements.
 
-Problem/outcome → AI planning proposal → material assumptions/risks surfaced →
-plain-English Product Owner review → explicit approval → bounded implementation →
-tests/acceptance evidence → verified checkpoint.
+The sequence above integrates the development gate; it is not a second approval
+process. Normal scoped maintenance uses proportionate review. Material premise,
+value and constraint questions belong before substantial building, not in the
+cosmetic-improvement queue. Verified acceptance precedes any authorized checkpoint.
+
+### Assign the right resource
+
+| Resource | Strength and responsibility | Practical limit |
+| --- | --- | --- |
+| Human domain / Product Owner | Context, objectives, values, framing, material assumptions and consequential judgments | Structured evidence supports, rather than replaces, contextual responsibility |
+| Reasoning AI | Contextual interpretation, ambiguity, synthesis, generalization and adaptive semantic reasoning | May cost more compute and be less mechanically reproducible; claims need evidence |
+| AI coding / implementation agent | Reasons about repositories and systems, implements code, uses tools and tests | Its reasoning capabilities do not automatically become capabilities of the software it creates |
+| Deterministic software / database / automation | Repeated defined transformations, fast inexpensive processing at scale, state and testable controls | Limited to encoded sources, inputs and rules unless extended |
+
+For each workflow step, identify the resource doing the work and why. Existing-tool
+capability must be demonstrated, not assumed from a product name. Security and
+human authorization requirements still apply to every resource.
 
 ## Automation traceability principle
 

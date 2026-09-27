@@ -1,6 +1,6 @@
 # AI Controller Lab Roadmap
 
-**Job Scout v1: in progress; Task 5 approved cohort configured; release remains open.**
+**Job Scout: working system with scoped acceptance evidence; value/closure review next; release remains open.**
 The [product contract](job-agent/master_prompt.md) owns detailed requirements.
 [OPERATING_SYSTEM.md](OPERATING_SYSTEM.md) owns Daily Close and Release Close.
 
@@ -23,6 +23,26 @@ separate approval. Public mapping/approval metadata is recorded; unknown facts s
 live check succeeded for all seven sources (915 postings, 20 recognized roles before
 location/state filtering). The operating guide records dated per-source evidence;
 this is structural compatibility, not final usefulness or completeness acceptance.
+Task 5 is committed at aab64a2eab60c7337a59e9e6ac6540aeb67a4be2; Adam reports the
+push verified. Daily Close read-only checks found HEAD and local origin/main at
+that hash with a clean starting tree; no new remote query was performed.
+
+After that checkpoint, Adam reports a manual live run with the verified interpreter:
+915 postings → 20 recognized → 18 displayed and unhandled under normal location
+policy. Independent ChatGPT/Atlas research found substantially the same useful
+population within the same seven employers. The operating guide preserves the
+reported titles and ignored local evidence path. The possible Figma Senior Technical
+Revenue Analyst difference was reviewed by Adam and is not a currently material
+defect; no classifier expansion follows. These user-supplied observations were not
+independently rerun during Daily Close.
+
+This supports deterministic reduction/repeatability in the configured population,
+not broader-market completeness, measured efficiency gains or commercial validation.
+Greenhouse-only configuration excludes potentially excellent employers using other
+career systems. The business consequence deserved earlier Product Owner challenge;
+it is not a security defect or an implementation failure. The remaining value
+question is whether repeatability/state/scale/control justify continued maintenance
+over reasoning-AI-assisted discovery.
 
 Task 4 adds explicit application records, append-only events, UNKNOWN/NO/YES
 engagement, active employer suppression in selection_job_ids, reapply review after
@@ -84,25 +104,32 @@ suppression, portfolio history or export.
   reconciliation and factual application/event history; synthetic acceptance verified.
   New actual applications create new records; prior closed records remain immutable.
   Local checkpoint 0159b0e verified at Task 5 opening; remote was not queried.
-- [ ] Implement nullable application portfolio and manual/recruiter opportunities.
-- [ ] Implement private optional .xlsx analysis export with three approved views.
-- [ ] Verify redesigned acceptance and complete authorized Release Close.
+- [ ] Review minimal Job Scout closure/release disposition and remaining incremental
+  value before deciding whether any additional work is warranted.
+- [ ] Resolve applicable acceptance/security gates before any separately authorized
+  Release Close; this documentation task does not perform Release Close.
 
-Task sequence may be refined at each authorized design review without expanding
-the product contract. Registry, schema, lifecycle and export changes must be
-tested before touching real history.
+Broader portfolio/manual opportunities, optional Excel export and multi-ATS support
+remain unapproved for implementation. Previously specified portfolio/export criteria
+below are deferred candidates, not an automatic build queue. Any substantial follow-on
+must pass the Build-vs-Existing Capability Gate in OPERATING_SYSTEM. A Product Owner
+scope disposition must explicitly retain/defer/remove criteria before release;
+this close does not silently mark them satisfied or cancel them.
 
 ## Redesigned v1 acceptance gates — release remains open
 
 - [x] Configure approved cycle-based Greenhouse cohort with explicit pool mechanics
   and visible source health: seven approved ACTIVE sources, SpaceX PAUSED. Task 5
-  verifies configuration/compatibility; final Product Owner usefulness remains open.
+  verifies configuration/compatibility; scoped comparison now exists, while final
+  incremental-value and release disposition remain open.
 - [ ] All broadly relevant opportunities surfaced; primary roles recognized;
   adjacent finance families/ambiguous geography shown REVIEW NEEDED; default junior
   exclusions and incompatible geography handled as specified. Empty live feeds
   are reported honestly, not padded or treated as proof of complete coverage.
-  Task 3 verifies implemented deterministic rules on fixtures; final live
-  population/usefulness acceptance remains open.
+  Task 3 verifies implemented deterministic rules on fixtures; Adam's live comparison
+  now supports useful population coverage within the seven-employer scope, including
+  displayed Assistant Controller roles. It is not exhaustive recall or broader-market
+  proof; final scope/acceptance disposition remains open.
 - [ ] LA/California-remote/hybrid policy verified; score is transparent
   accounting-signal coverage, not candidate-fit or hiring probability.
   Fixture cases pass in Task 3; live eligibility still requires human review.
@@ -114,14 +141,16 @@ tested before touching real history.
 - [ ] Existing private SQLite records survive separately authorized migration.
   Synthetic preservation/rollback and explicit canonical identity are verified in
   Tasks 2/4; private backup/restoration planning and real migration remain outstanding.
-- [ ] Portfolio persists factual fields, null unknowns, manual/recruiter opportunities
+- [ ] **Deferred candidate, not build authorization:** Portfolio persists factual fields, null unknowns, manual/recruiter opportunities
   and interview/outcome updates without fabricating applications or career evidence.
-- [ ] Optional workbook has Open Opportunities, Application Portfolio and Employer
+- [ ] **Deferred candidate, not build authorization:** Optional workbook has Open Opportunities, Application Portfolio and Employer
   Pool / Source Health views; SQLite stays authoritative; evidence/unknowns remain
   truthful; sensitive fields are omitted by default; artifacts are ignored and
   external text cannot become executable spreadsheet formulas.
-- [ ] Adam reviews the factual discovery/tracking/export handoff as useful for
-  deeper analysis with ChatGPT. No runtime application-writing acceptance required.
+- [ ] Final handoff/value disposition: Adam's comparison supports discovery usefulness
+  in the approved population. Incremental maintenance value, tracking benefits and
+  disposition of deferred export remain unresolved. No runtime application-writing
+  acceptance is required.
 - [ ] Relevant regressions pass, security disposition covers final changes,
   docs/recovery/workpapers match implementation, and authorized release checkpoint/
   tag and remote verification complete under Release Close.
@@ -140,12 +169,31 @@ recruiter messages are no longer release requirements. They were superseded by
 product-owner approval, not retroactively verified. Task 3 replaced the normal
 Top-5 output with complete discovery. Dated workpapers retain historical context.
 
-## Foundation and future projects
+## Next major phase — AI Controller Capability Benchmark planning
+
+First review whether Job Scout needs minimal closure/release disposition before
+shifting focus. Do not automatically implement Bank Recon, journal-entry automation
+or another Controller module because it appeared on an older roadmap.
+
+Plan a cheap comparison for a bounded candidate: bank reconciliation, journal-entry
+drafting, variance analysis, balance-sheet reconciliation/close review or audit PBC
+preparation. Compare A: reasoning AI/Atlas only; B: existing accounting/office tools
+where relevant; C: the current/manual baseline where useful. Define a common case,
+expected evidence, acceptable errors and success criteria before execution.
+
+Evaluate setup effort, processing time, quality/accuracy, exception handling,
+repeatability, evidence/auditability, compute/cost, human effort and privacy/control
+requirements. Ask where reasoning AI actually struggles; build only for a demonstrated
+meaningful gap under the operating system's integrated gate. A possible hybrid is
+high-volume deterministic preprocessing → reasoning AI for exceptions/ambiguity →
+human approval of consequential accounting judgments. This is a candidate pattern,
+not an architecture selected in advance of evidence.
+
+Tonight documents the direction only: no benchmark implementation, accounting
+integration or sensitive-data access. Prefer synthetic cases; any later real-data
+use requires SECURITY's activation review and explicit authorization.
 
 Existing foundation: Git/GitHub and editor workflow, Python, earlier Playwright
-experiments, security policy, recovery context and workpapers.
-
-Controller Copilot (close, reconciliation, journal drafts, variance analysis,
-audit workpapers) and Life Admin remain future projects. Parking lot: LinkedIn
-Assistant, Revenue Agent, Venture Lab, Finance Dashboard, disaster-recovery drill.
-These entries authorize no integration or sensitive-data access.
+experiments, security policy, recovery context and workpapers. Life Admin, LinkedIn
+Assistant, Revenue Agent, Venture Lab, Finance Dashboard and a disaster-recovery
+drill remain parked ideas, not authorized builds.

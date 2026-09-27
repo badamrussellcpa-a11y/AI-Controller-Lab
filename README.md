@@ -24,15 +24,28 @@ Git state read-only. Repository evidence takes precedence over conversational me
   Muck Rack, LaunchDarkly, BaubleBar, Airtable, Figma, Reddit and Rocket Lab.
   SpaceX is retained PAUSED. Seven is intentional; ACTIVE is not a quota. See the
   [current operating guide](job-agent/README.md).
-- **Still open:** Product Owner usefulness comparison with separate ChatGPT/manual
-  research, optional minimal portfolio/Excel work, any separately authorized private
-  migration, final security review and Release Close. Employer selection belongs to
-  human + AI judgment; Scout executes approved configuration without an employer
-  scoring algorithm. Future cohorts require separate Product Owner approval.
-- **Future/learning projects:** Lumina Wearables training company, Controller
-  Copilot (bank reconciliation, month-end close, audit PBC assistance), and Life
-  Admin. These entries do not claim implemented production systems or authorize
-  access to accounting/personal data.
+- **Post-checkpoint evidence:** Adam reports a live run of 915 postings → 20
+  recognized roles → 18 displayed/unhandled under normal location policy. Independent
+  AI-assisted research found substantially the same useful roles within these seven
+  employers. See the operating guide for provenance and limits. Configured Greenhouse
+  coverage excludes employers on other systems; this is not market completeness.
+- **Still open:** Does repeatability/state/scale/control justify maintenance over
+  reasoning-AI-assisted discovery? Review minimal Job Scout closure/release disposition
+  before shifting focus. No commercial validation or v1 release is claimed. Optional
+  Excel/portfolio/multi-ATS work is unapproved; any private migration and final release
+  security review remain separately controlled. Future cohorts need new approval.
+- **Next major direction:** AI Controller Capability Benchmark planning, comparing
+  reasoning AI, existing accounting/office tools and a manual baseline before building
+  demonstrated gaps. Older bank-reconciliation/Controller Copilot ideas are candidates,
+  not automatic implementation instructions. Lumina Wearables and Life Admin remain
+  future/learning ideas; no sensitive-data access is authorized.
+
+The project clarified a distinction that was insufficiently explicit at inception:
+Atlas/reasoning AI → Codex/implementation agent → deterministic Python/SQLite Scout.
+An intelligent builder does not automatically give its software contextual reasoning.
+Future substantial builds use the integrated **Build-vs-Existing Capability Gate** in
+[OPERATING_SYSTEM.md](OPERATING_SYSTEM.md); [WP-012](workpapers/WP-012.md) explains
+this learning through the actual acceptance example.
 
 ## Document ownership
 
