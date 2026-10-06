@@ -1,6 +1,6 @@
 # AI Controller Lab — current recovery context
 
-**Updated September 26, 2026. Task 5 committed; post-checkpoint learning reconciled; documentation-only Daily Close prepared, not committed/pushed. Release remains open.**
+**Updated September 26, 2026. Task 5 committed; post-checkpoint learning reconciled; documentation-only Daily Close committed and pushed (5786e18). Release remains open.**
 
 Permanent procedures: [OPERATING_SYSTEM.md](OPERATING_SYSTEM.md).
 Security: [SECURITY.md](SECURITY.md). Product: [job-agent/master_prompt.md](job-agent/master_prompt.md).
@@ -60,11 +60,11 @@ correction plan for a factual entry error.
 ## Verified checkpoint and results
 
 Task 5 is committed at aab64a2eab60c7337a59e9e6ac6540aeb67a4be2. Adam reports it
-pushed and verified clean before this Daily Close. Current read-only Git inspection
-confirmed main tracking origin/main, a clean starting tree, and HEAD/local origin/main
-at that hash. No new remote query was made. The September 26 documentation changes
-are a prepared Daily Close, not a completed/pushed close or Release Close. No staging,
-commit, push or tag is authorized for this task.
+pushed and verified clean before this Daily Close. At preparation time, read-only Git
+inspection confirmed main tracking origin/main, a clean starting tree, and HEAD/local
+origin/main at that hash; no new remote query was made then. GitHub now confirms the
+September 26 documentation-only Daily Close was committed and pushed at
+5786e1867dc14b4266271e74cafb4f8719cc21b9 on main. This is not a Release Close.
 
 At the Task 5 checkpoint, 28 focused foundation/configuration tests and all 112
 tests passed, including 30
@@ -129,8 +129,8 @@ discovery. Successful implementation alone does not answer it.
 
 ## Open work and exact next bounded task
 
-At the next session, inspect Git to determine whether Adam completed this prepared
-Daily Close checkpoint; do not assume the documentation was pushed. Then review
+At the next session, inspect Git for changes since the verified documentation-only
+Daily Close checkpoint (5786e1867dc14b4266271e74cafb4f8719cc21b9). Then review
 whether Job Scout needs a final minimal closure/release disposition before shifting
 focus. Inventory unresolved acceptance/security and any private-migration need
 without opening private data; obtain an explicit scope disposition, not automatic
